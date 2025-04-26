@@ -14,11 +14,11 @@ namespace renderHelp
     class SpriteSheet;
 }
 
-class MyFirstWndGame : public NzWndBase
+class Tetris : public NzWndBase
 {
 public:
-    MyFirstWndGame() = default;
-    ~MyFirstWndGame() override = default;
+    Tetris() = default;
+    ~Tetris() override = default;
 
     bool Initialize();
     void Run();
@@ -30,8 +30,6 @@ private:
 
     void OnResize(int width, int height) override;
     void OnClose() override;
-
-    void OnKeyDown(int key);
 
     void FixedUpdate();
     void LogicUpdate();
@@ -46,23 +44,6 @@ private:
     GameTimer* m_pGameTimer = nullptr;
     float m_fDeltaTime = 0.0f;
     float m_fFrameCount = 0.0f;
-
-    // [CHECK] #8. 게임 오브젝트를 관리하는 컨테이너.
-    // GameObjectBase** m_GameObjectPtrTable = nullptr; Scene으로
-
-    struct MOUSE_POS
-    {
-        int x = 0;
-        int y = 0;
-
-        bool operator!=(const MOUSE_POS& other) const
-        {
-            return (x != other.x || y != other.y);
-        }
-    };
-
-    MOUSE_POS m_MousePos = { 0, 0 };
-    MOUSE_POS m_MousePosPrev = { 0, 0 };
 
 #pragma region resource
     using BitmapInfo = renderHelp::BitmapInfo;

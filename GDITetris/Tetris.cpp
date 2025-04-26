@@ -1,4 +1,4 @@
-#include "MyFirstWndGame.h"
+#include "Tetris.h"
 #include "GameTimer.h"
 #include "Collider.h"
 #include "GameObject.h"
@@ -17,12 +17,12 @@ using namespace renderHelp;
 #define RED RGB(255, 0, 0)
 #define BLUE RGB(0, 0, 255)
 
-bool MyFirstWndGame::Initialize()
+bool Tetris::Initialize()
 {
     m_pGameTimer = new GameTimer();
     m_pGameTimer->Reset();
 
-    const wchar_t* className = L"MyFirstWndGame";
+    const wchar_t* className = L"Tetris";
     const wchar_t* windowName = L"GDITetris";
 
     if (false == __super::Create(className, windowName, 1024, 720))
@@ -74,7 +74,7 @@ bool MyFirstWndGame::Initialize()
 
 }
 
-void MyFirstWndGame::Run()
+void Tetris::Run()
 {
     MSG msg = { 0 };
     while (msg.message != WM_QUIT)
@@ -83,7 +83,7 @@ void MyFirstWndGame::Run()
         {
             if (msg.message == WM_KEYDOWN)
             {
-                MyFirstWndGame::OnKeyDown(msg.wParam);
+                m_pScenes[m_eCurrentScene]->OnKeyDown(msg.wParam);
             }
             else
             {
@@ -99,7 +99,7 @@ void MyFirstWndGame::Run()
     }
 }
 
-void MyFirstWndGame::Finalize()
+void Tetris::Finalize()
 {
     delete m_pGameTimer;
     m_pGameTimer = nullptr;
@@ -123,23 +123,23 @@ void MyFirstWndGame::Finalize()
     __super::Destroy();
 }
 
-void MyFirstWndGame::FixedUpdate()
+void Tetris::FixedUpdate()
 {
     m_pScenes[m_eCurrentScene]->FixedUpdate();
 }
 
-void MyFirstWndGame::LogicUpdate()
+void Tetris::LogicUpdate()
 {
 
     m_pScenes[m_eCurrentScene]->Update(m_fDeltaTime);
 }
 
-BitmapInfo* MyFirstWndGame::GetBackgroundBitmapInfo() const
+BitmapInfo* Tetris::GetBackgroundBitmapInfo() const
 {
     return m_pBackgroundBitmapInfo;
 }
 
-void MyFirstWndGame::ChangeScene(SceneType eSceneType)
+void Tetris::ChangeScene(SceneType eSceneType)
 {
     if (m_eCurrentScene != eSceneType)
     {
@@ -149,7 +149,7 @@ void MyFirstWndGame::ChangeScene(SceneType eSceneType)
     }
 }
 
-void MyFirstWndGame::Update()
+void Tetris::Update()
 {
     m_pGameTimer->Tick();
 
@@ -165,7 +165,7 @@ void MyFirstWndGame::Update()
     }
 }
 
-void MyFirstWndGame::Render()
+void Tetris::Render()
 {
     //Clear the back buffer
     ::PatBlt(m_hBackDC, 0, 0, m_width, m_height, WHITENESS);
@@ -176,7 +176,7 @@ void MyFirstWndGame::Render()
     BitBlt(m_hFrontDC, 0, 0, m_width, m_height, m_hBackDC, 0, 0, SRCCOPY);
 }
 
-void MyFirstWndGame::OnResize(int width, int height)
+void Tetris::OnResize(int width, int height)
 {
     std::cout << __FUNCTION__ << std::endl;
 
@@ -194,7 +194,7 @@ void MyFirstWndGame::OnResize(int width, int height)
     DeleteObject(hPrevBitmap);
 }
 
-void MyFirstWndGame::OnClose()
+void Tetris::OnClose()
 {
     std::cout << __FUNCTION__ << std::endl;
 
@@ -204,51 +204,4 @@ void MyFirstWndGame::OnClose()
     DeleteDC(m_hBackDC);
 
     ReleaseDC(m_hWnd, m_hFrontDC);
-}
-
-void MyFirstWndGame::OnKeyDown(int key)
-{
-    static bool waitingForAnyKey = true;
-    if (m_eCurrentScene == SceneType::SCENE_PLAY)
-    {
-        switch (key)
-        {
-        case VK_UP:
-        case 'X':
-            //시계 방향 회전
-            break;
-        case VK_LEFT:
-            //왼쪽으로 이동
-            break;
-        case VK_RIGHT:
-            //오른쪽으로 이동
-            break;
-        case VK_DOWN:
-            //소프트 드롭
-            break;
-        case VK_SPACE:
-            //하드 드롭
-            break;
-        case VK_CONTROL:
-        case 'Z':
-            //반시계 방향 회전
-            break;
-        case VK_SHIFT:
-        case 'C':
-            //홀드
-            break;
-        case 'A':
-            //180도 회전
-            break;
-        }
-    }
-    
-    if (m_eCurrentScene == SceneType::SCENE_TITLE)
-    {
-        if (waitingForAnyKey)
-        {
-            m_pScenes[m_eCurrentScene]->SetTrigger(waitingForAnyKey);
-            waitingForAnyKey = false;
-        }
-    }
 }

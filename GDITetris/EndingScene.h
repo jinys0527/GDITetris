@@ -1,7 +1,7 @@
 #pragma once
 #include "Scene.h"
 
-class MyFirstWndGame;
+class Tetris;
 
 class EndingScene : public Scene
 {
@@ -19,11 +19,14 @@ public:
     void Update(float deltaTime) override;
     void Render(HDC hDC) override;
 
+    void OnKeyDown(int key) override;
 private:
-    MyFirstWndGame* m_pGame = nullptr;
+    Tetris* m_pGame = nullptr;
 
     WCHAR m_szTitle[64] = L"Ending Scene";
 
     RECT m_rect = { 0, 0, 0, 0 };
+
+    bool isTrigger = false;
 };
 

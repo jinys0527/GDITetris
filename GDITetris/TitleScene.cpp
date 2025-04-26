@@ -1,5 +1,5 @@
 #include "TitleScene.h"
-#include "MyFirstWndGame.h"
+#include "Tetris.h"
 #include "GameObject.h"
 #include "Utillity.h"
 #include <assert.h>
@@ -8,7 +8,7 @@ using namespace learning;
 
 void TitleScene::Initialize(NzWndBase* pWnd)
 {
-    m_pGame = dynamic_cast<MyFirstWndGame*>(pWnd);
+    m_pGame = dynamic_cast<Tetris*>(pWnd);
     assert(m_pGame != nullptr && "Game object is not initialized!");
 
     Background* pNewObject = new Background(ObjectType::BACKGROUND);
@@ -71,9 +71,9 @@ void TitleScene::Render(HDC hDC)
     DeleteObject(hFont);         // 새로 만든 폰트 해제
 }
 
-void TitleScene::SetTrigger(bool isTrigger)
+void TitleScene::OnKeyDown(int key)
 {
-    this->isTrigger = isTrigger;
+     isTrigger = true;
 }
 
 void TitleScene::Finalize()
@@ -87,6 +87,7 @@ void TitleScene::Finalize()
 
 void TitleScene::Enter()
 {
+    isTrigger = false;
 }
 
 void TitleScene::Leave()

@@ -3,7 +3,7 @@
 #include "Scene.h"
 
 class GameObjectBase;
-class MyFirstWndGame;
+class Tetris;
 
 class TitleScene : public Scene
 {
@@ -21,14 +21,13 @@ public:
     void Update(float deltaTime) override;
     void Render(HDC hDC) override;
 
-    void SetTrigger(bool isTrigger) override;
-
+    void OnKeyDown(int key) override;
 private:
 
     GameObjectBase* m_pBackground = nullptr;
     //GameObjectBase* m_pStartButton = nullptr;
 
-    MyFirstWndGame* m_pGame = nullptr;
+    Tetris* m_pGame = nullptr;
 
     WCHAR m_szTitle[64] = L"Title Scene";
 

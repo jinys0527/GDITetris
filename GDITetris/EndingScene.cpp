@@ -1,10 +1,10 @@
 #include "EndingScene.h"
-#include "MyFirstWndGame.h"
+#include "Tetris.h"
 #include <assert.h>
 
 void EndingScene::Initialize(NzWndBase* pWnd)
 {
-    m_pGame = dynamic_cast<MyFirstWndGame*>(pWnd);
+    m_pGame = dynamic_cast<Tetris*>(pWnd);
     assert(m_pGame != nullptr && "Game object is not initialized!");
 
     int width = m_pGame->GetWidth();
@@ -18,11 +18,20 @@ void EndingScene::Initialize(NzWndBase* pWnd)
 
 void EndingScene::Update(float deltaTime)
 {
+    if (isTrigger)
+    {
+        m_pGame->ChangeScene(SceneType::SCENE_TITLE);
+    }
 }
 
 void EndingScene::Render(HDC hDC)
 {
     DrawText(hDC, m_szTitle, -1, &m_rect, DT_CENTER | DT_VCENTER);
+}
+
+void EndingScene::OnKeyDown(int key)
+{
+    isTrigger = true;
 }
 
 void EndingScene::Finalize()
@@ -31,6 +40,7 @@ void EndingScene::Finalize()
 
 void EndingScene::Enter()
 {
+    isTrigger = false;
 }
 
 void EndingScene::Leave()

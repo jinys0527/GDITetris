@@ -54,7 +54,7 @@
     <ClCompile Include="TitleScene.cpp">
       <Filter>소스 파일\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="MyFirstWndGame.cpp">
+    <ClCompile Include="Tetris.cpp">
       <Filter>소스 파일\Window</Filter>
     </ClCompile>
     <ClCompile Include="NzWndBase.cpp">
@@ -98,7 +98,7 @@
     <ClInclude Include="TitleScene.h">
       <Filter>헤더 파일\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="MyFirstWndGame.h">
+    <ClInclude Include="Tetris.h">
       <Filter>헤더 파일\Window</Filter>
     </ClInclude>
     <ClInclude Include="NzWndBase.h">

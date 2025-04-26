@@ -26,7 +26,8 @@ public:
     virtual void FixedUpdate() = 0;
     virtual void Update(float deltaTime) = 0;
     virtual void Render(HDC hDC) = 0;
-    virtual void SetTrigger(bool isTrigger) {}
+   
+    virtual void OnKeyDown(int key) = 0;
 
 protected:
     GameObjectBase** m_GameObjectPtrTable = nullptr;
