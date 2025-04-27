@@ -1,7 +1,8 @@
 #include "Tetromino.h"
 #include "Cell.h"
+#include <iostream>
 
-Tetromino::Tetromino(eBrickType brickType) : type(brickType), rotation(0), x(4), y(4)
+Tetromino::Tetromino(eBrickType brickType) : type(brickType), rotation(0), x(4), y(-1)
 {
     memset(blocks, 0, sizeof(blocks));
 

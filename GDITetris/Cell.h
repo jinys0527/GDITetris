@@ -35,9 +35,9 @@ public:
 
 	void SetCell(int x, int y, Tetromino::eBrickType type);
 
-	void CenterOnScreen(int windowWidth, int windowHeight);
+	void PositioningOnScreen(int windowWidth, int windowHeight);
 
-	void Draw(HDC hdc, SpriteSheet* pSpriteSheet, Tetromino* activeTetromino);
+	void Draw(HDC hdc, SpriteSheet* pSpriteSheet, Tetromino* activeTetromino, Tetromino* holdTetromino, Tetromino** nextTetrominos, int nextTetrominosSize);
 	void DrawBlock(int x, int y, Tetromino::eBrickType type, HDC hdc, SpriteSheet* pSpriteSheet);
 
 	void FixTetrominoToBoard(GameBoard& board, Tetromino* tetromino);
@@ -47,9 +47,21 @@ public:
 	void RemoveFullLines();
 
 	bool IsGameOver();
+
+	int GetLevel() const;
+	void UpdateLevel();
+
+	int GetLinesCleared() const;
+
+	void AddScore(int points);
+	int GetScore() const;
 private:
 	Cell grid[21][12];
 	int boardX;
 	int boardY;
 	int cellSize;
+
+	int level = 1;
+	int linesCleared = 0;
+	int score = 0;
 };

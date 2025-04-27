@@ -10,7 +10,7 @@ LRESULT CALLBACK NzWndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	case WM_SIZE:
 	{
 		NzWndBase* pNzWnd = (NzWndBase*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
-		if (pNzWnd)pNzWnd->OnResize(LOWORD(lparam), HIWORD(lparam));
+		//if (pNzWnd)pNzWnd->OnResize(LOWORD(lparam), HIWORD(lparam));
 		break;
 	}
 
@@ -54,7 +54,7 @@ bool NzWndBase::Create(const wchar_t* className, const wchar_t* windowName, int 
 	AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, false);
 
 	//[CHECK] AdjustWindowRect()의 의미는? 프레임 제외한 사이즈만큼 잡기 위해
-	m_hWnd = CreateWindowEx(NULL, MAKEINTATOM(classId), L"", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
+	m_hWnd = CreateWindowEx(NULL, MAKEINTATOM(classId), L"", WS_OVERLAPPEDWINDOW & ~(WS_THICKFRAME | WS_MAXIMIZEBOX), CW_USEDEFAULT, CW_USEDEFAULT,
 		rc.right - rc.left, rc.bottom - rc.top, HWND(), HMENU(), HINSTANCE(), NULL);
 
 	if (NULL == m_hWnd) return false;

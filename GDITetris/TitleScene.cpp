@@ -17,14 +17,16 @@ void TitleScene::Initialize(NzWndBase* pWnd)
     int width = m_pGame->GetWidth();
     int height = m_pGame->GetHeight();
 
+    learning::SetScreenSize(width, height);
+
     pNewObject->SetWidth(512);
     pNewObject->SetHeight(512);
 
     pNewObject->SetBitmapInfo(m_pGame->GetBackgroundBitmapInfo());
 
-    m_rect.left = width/2 - 175;
+    m_rect.left = width/2 - 275;
     m_rect.top = height/2 + 25;
-    m_rect.right = m_rect.left + 350;
+    m_rect.right = m_rect.left + 550;
     m_rect.bottom = m_rect.top + 100;
 
     m_pBackground = pNewObject;
@@ -51,7 +53,7 @@ void TitleScene::Render(HDC hDC)
     SetBkMode(hDC, TRANSPARENT);
 
     HFONT hFont = CreateFont(
-        32, 0, 0, 0,
+        48, 0, 0, 0,
         FW_BOLD,
         FALSE, FALSE, FALSE,
         OEM_CHARSET,
@@ -62,7 +64,7 @@ void TitleScene::Render(HDC hDC)
         L"Terminal"
     );
 
-    SetTextColor(hDC, RGB(200, 200, 50));
+    SetTextColor(hDC, RGB(255, 255, 50));
 
     // 이전 폰트 백업
     HFONT hOldFont = (HFONT)SelectObject(hDC, hFont);

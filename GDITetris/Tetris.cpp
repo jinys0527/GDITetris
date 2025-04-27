@@ -25,7 +25,7 @@ bool Tetris::Initialize()
     const wchar_t* className = L"Tetris";
     const wchar_t* windowName = L"GDITetris";
 
-    if (false == __super::Create(className, windowName, 1024, 720))
+    if (false == __super::Create(className, windowName, 1280, 960))
     {
         return false;
     }
@@ -43,6 +43,8 @@ bool Tetris::Initialize()
     
 #pragma region resource
     m_pBackgroundBitmapInfo = renderHelp::CreateBitmapInfo(L"../Resource/title.png");
+    m_pUIBitmapInfo = renderHelp::CreateBitmapInfo(L"../Resource/ui.png");
+
     m_pBricksSpriteSheet = new SpriteSheet();
     if (!m_pBricksSpriteSheet->LoadFromJson(L"../Resource/bricks.json") ||
         !m_pBricksSpriteSheet->LoadSprite(L"../Resource/bricks.png"))
@@ -51,7 +53,7 @@ bool Tetris::Initialize()
         return false;
     }
 
-    if (m_pBackgroundBitmapInfo == nullptr)
+    if (m_pBackgroundBitmapInfo == nullptr || m_pUIBitmapInfo == nullptr)
     { 
         std::cout << "Bitmap Load Failed!" << std::endl;
         return false;
@@ -137,6 +139,11 @@ void Tetris::LogicUpdate()
 BitmapInfo* Tetris::GetBackgroundBitmapInfo() const
 {
     return m_pBackgroundBitmapInfo;
+}
+
+BitmapInfo* Tetris::GetUIBitmapInfo() const
+{
+    return m_pUIBitmapInfo;
 }
 
 void Tetris::ChangeScene(SceneType eSceneType)

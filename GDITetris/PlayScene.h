@@ -32,6 +32,7 @@ class PlayScene :public Scene
 
     void OnKeyDown(int key) override;
 
+    void Hold();
     void RandomGenerateTetromino();
 private:
     Tetris* m_pGame = nullptr;
@@ -40,6 +41,12 @@ private:
     SpriteSheet* m_pSpriteSheet = nullptr;
 
     Tetromino* m_pTetromino = nullptr;
+    Tetromino* m_pNextTetromino[4] = { nullptr, nullptr, nullptr, nullptr };
+    Tetromino* m_pHoldTetromino = nullptr;
+
+    GameObjectBase* m_pBackground = nullptr;
+
+    bool m_canHold = true;
 
     std::mt19937 mt;
     std::uniform_int_distribution<int> m_dist;
