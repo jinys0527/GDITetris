@@ -2,108 +2,124 @@
 #include "Cell.h"
 #include <iostream>
 
+struct Offset
+{
+    int x;
+    int y;
+};
+
+static const Offset WallKickDataNormal[5] = {
+    {0, 0},
+    {-1, 0},
+    {-1, 1},
+    {0, -2},
+    {-1, -2}
+};
+
+static const Offset WallKickDataI[5] = {
+    {0, 0},
+    {-2, 0},
+    {1, 0},
+    {-2, -1},
+    {1, 2}
+};
+
 Tetromino::Tetromino(eBrickType brickType) : type(brickType), rotation(0), x(4), y(-1)
 {
     memset(blocks, 0, sizeof(blocks));
-
+    //blocks[rotation][y][x]
     switch (brickType)
     {
     case TYPE_I:
-        SetSize(0, 1, 4);
+        SetSize(0, 4, 1);
         blocks[0][1][0] = 1; blocks[0][1][1] = 1; blocks[0][1][2] = 1; blocks[0][1][3] = 1;
 
-        SetSize(1, 4, 1);
-        blocks[1][0][1] = 1; blocks[1][1][1] = 1; blocks[1][2][1] = 1; blocks[1][3][1] = 1;
+        SetSize(1, 1, 4);
+        blocks[1][0][2] = 1; blocks[1][1][2] = 1; blocks[1][2][2] = 1; blocks[1][3][2] = 1; 
 
-        SetSize(2, 1, 4); 
-        blocks[2][2][0] = 1; blocks[2][2][1] = 1; blocks[2][2][2] = 1; blocks[2][2][3] = 1;
+        SetSize(2, 4, 1); 
+        blocks[2][2][0] = 1; blocks[2][2][1] = 1; blocks[2][2][2] = 1; blocks[2][2][3] = 1; 
 
-        SetSize(3, 4, 1);
-        blocks[3][0][2] = 1; blocks[3][1][2] = 1; blocks[3][2][2] = 1; blocks[3][3][2] = 1;
+        SetSize(3, 1, 4);
+        blocks[3][0][1] = 1; blocks[3][1][1] = 1; blocks[3][2][1] = 1; blocks[3][3][1] = 1;
         break;
 
     case TYPE_J:
-        SetSize(0, 2, 3);
-        blocks[0][1][1] = 1; blocks[0][2][1] = 1; blocks[0][1][2] = 1; blocks[0][1][3] = 1;
+        SetSize(0, 3, 2);
+        blocks[0][0][0] = 1; blocks[0][1][0] = 1; blocks[0][1][1] = 1; blocks[0][1][2] = 1;
 
-        SetSize(1, 3, 2);
-        blocks[1][0][2] = 1; blocks[1][1][2] = 1; blocks[1][2][2] = 1; blocks[1][2][3] = 1;
+        SetSize(1, 2, 3);
+        blocks[1][0][1] = 1; blocks[1][0][2] = 1; blocks[1][1][1] = 1; blocks[1][2][1] = 1; 
 
-        SetSize(2, 2, 3);
-        blocks[2][0][3] = 1; blocks[2][1][1] = 1; blocks[2][1][2] = 1; blocks[2][1][3] = 1;
+        SetSize(2, 3, 2);
+        blocks[2][1][0] = 1; blocks[2][1][1] = 1; blocks[2][1][2] = 1; blocks[2][2][2] = 1; 
 
-        SetSize(3, 3, 2);
-        blocks[3][0][1] = 1; blocks[3][0][2] = 1; blocks[3][1][2] = 1; blocks[3][2][2] = 1;
+        SetSize(3, 2, 3);
+        blocks[3][0][1] = 1; blocks[3][1][1] = 1; blocks[3][2][0] = 1; blocks[3][2][1] = 1;
         break;
 
     case TYPE_L:
-        SetSize(0, 2, 3); 
-        blocks[0][1][1] = 1; blocks[0][1][2] = 1; blocks[0][1][3] = 1; blocks[0][2][3] = 1;
+        SetSize(0, 3, 2); 
+        blocks[0][0][2] = 1; blocks[0][1][0] = 1; blocks[0][1][1] = 1; blocks[0][1][2] = 1;
 
-        SetSize(1, 3, 2);
-        blocks[1][0][2] = 1; blocks[1][1][2] = 1; blocks[1][2][2] = 1; blocks[1][0][3] = 1;
+        SetSize(1, 2, 3);
+        blocks[1][0][1] = 1; blocks[1][1][1] = 1; blocks[1][2][1] = 1; blocks[1][2][2] = 1;
 
-        SetSize(2, 2, 3);
-        blocks[2][0][1] = 1; blocks[2][1][1] = 1; blocks[2][1][2] = 1; blocks[2][1][3] = 1;
+        SetSize(2, 3, 2);
+        blocks[2][1][0] = 1; blocks[2][1][1] = 1; blocks[2][1][2] = 1; blocks[2][2][0] = 1;
 
-        SetSize(3, 3, 2);
-        blocks[3][0][2] = 1; blocks[3][1][2] = 1; blocks[3][2][1] = 1; blocks[3][2][2] = 1;
+        SetSize(3, 2, 3);
+        blocks[3][0][0] = 1; blocks[3][0][1] = 1; blocks[3][1][1] = 1; blocks[3][2][1] = 1;
         break;
 
     case TYPE_O:
         for (int i = 0; i < 4; i++)
         {
             SetSize(i, 2, 2);
-            for (int j = 1; j < 3; j++)
-            {
-                for (int k = 1; k < 3; k++)
-                {
-                    blocks[i][j][k] = 1;
-                }
-            }
+            blocks[i][0][1] = 1; blocks[i][0][2] = 1; blocks[i][1][1] = 1; blocks[i][1][2] = 1;
         }
         break;
 
     case TYPE_T:
-        SetSize(0, 2, 3);
-        blocks[0][1][1] = 1; blocks[0][1][2] = 1; blocks[0][1][3] = 1; blocks[0][2][2] = 1;
+        SetSize(0, 3, 2);
+        blocks[0][0][1] = 1; blocks[0][1][0] = 1; blocks[0][1][1] = 1; blocks[0][1][2] = 1;
 
-        SetSize(1, 3, 2);
-        blocks[1][0][2] = 1; blocks[1][1][2] = 1; blocks[1][2][2] = 1; blocks[1][1][3] = 1;
+        SetSize(1, 2, 3);
+        blocks[1][0][1] = 1; blocks[1][1][1] = 1; blocks[1][1][2] = 1; blocks[1][2][1] = 1;
 
-        SetSize(2, 2, 3);
-        blocks[2][0][2] = 1; blocks[2][1][1] = 1; blocks[2][1][2] = 1; blocks[2][1][3] = 1;
+        SetSize(2, 3, 2);
+        blocks[2][1][0] = 1; blocks[2][1][1] = 1; blocks[2][1][2] = 1; blocks[2][2][1] = 1;
 
-        SetSize(3, 3, 2);
-        blocks[3][0][2] = 1; blocks[3][1][1] = 1; blocks[3][1][2] = 1; blocks[3][2][2] = 1;
+        SetSize(3, 2, 3);
+        blocks[3][0][1] = 1; blocks[3][1][0] = 1; blocks[3][1][1] = 1; blocks[3][2][1] = 1;
         break;
 
     case TYPE_S:
-        SetSize(0, 2, 3);
-        blocks[0][1][1] = 1; blocks[0][1][2] = 1; blocks[0][2][2] = 1; blocks[0][2][3] = 1;
+        SetSize(0, 3, 2);
+        blocks[0][0][1] = 1; blocks[0][0][2] = 1; blocks[0][1][0] = 1; blocks[0][1][1] = 1;
         
-        SetSize(1, 3, 2);
-        blocks[1][0][3] = 1; blocks[1][1][2] = 1; blocks[1][1][3] = 1; blocks[1][2][2] = 1;
+        SetSize(1, 2, 3);
+        blocks[1][0][1] = 1; blocks[1][1][1] = 1; blocks[1][1][2] = 1; blocks[1][2][2] = 1;
 
-        SetSize(2, 2, 3);
-        blocks[2][0][1] = 1; blocks[2][0][2] = 1; blocks[2][1][2] = 1; blocks[2][1][3] = 1;
+        SetSize(2, 3, 2);
+        blocks[2][1][1] = 1; blocks[2][1][2] = 1; blocks[2][2][0] = 1; blocks[2][2][1] = 1;
         
-        SetSize(3, 3, 2);
-        blocks[3][0][2] = 1; blocks[3][1][1] = 1; blocks[3][1][2] = 1; blocks[3][2][1] = 1;
+        SetSize(3, 2, 3);
+        blocks[3][0][0] = 1; blocks[3][1][0] = 1; blocks[3][1][1] = 1; blocks[3][2][1] = 1;
         break;
 
     case TYPE_Z:
-        SetSize(0, 2, 3);
-        blocks[0][1][2] = 1; blocks[0][1][3] = 1; blocks[0][2][1] = 1; blocks[0][2][2] = 1;
+        SetSize(0, 3, 2);
+        blocks[0][0][0] = 1; blocks[0][0][1] = 1; blocks[0][1][1] = 1; blocks[0][1][2] = 1;
 
-        SetSize(1, 3, 2);
-        blocks[1][1][1] = 1; blocks[1][2][1] = 1; blocks[1][2][2] = 1; blocks[1][3][2] = 1;
+        SetSize(1, 2, 3);
+        blocks[1][0][2] = 1; blocks[1][1][1] = 1; blocks[1][1][2] = 1; blocks[1][2][1] = 1;
 
-        SetSize(2, 2, 3);
-        blocks[2][3][1] = 1; blocks[2][2][2] = 1; blocks[2][3][2] = 1; blocks[2][2][3] = 1;
+        SetSize(2, 3, 2);
+        blocks[2][1][0] = 1; blocks[2][1][1] = 1; blocks[2][2][1] = 1; blocks[2][2][2] = 1;
 
-        SetSize(3, 3, 2);
-        blocks[3][1][2] = 1; blocks[3][2][2] = 1; blocks[3][2][3] = 1; blocks[3][3][3] = 1;
+        SetSize(3, 2, 3);
+        blocks[3][0][1] = 1; blocks[3][1][0] = 1; blocks[3][1][1] = 1; blocks[3][2][0] = 1;
         break;
     }
 }
@@ -143,28 +159,12 @@ bool Tetromino::MoveDown(const GameBoard& board)
 
 bool Tetromino::RotateCW(const GameBoard& board)
 {
-    int prevRotation = rotation;
-    rotation = (rotation + 1) % 4;
-
-    if (CheckCollision(board))
-    {
-        rotation = prevRotation;
-        return false;
-    }
-    return true;
+    return RotateWithCheckCollision(board, true);
 }
 
 bool Tetromino::RotateCCW(const GameBoard& board)
 {
-    int prevRotation = rotation;
-    rotation = (rotation - 1 + 4) % 4;
-
-    if (CheckCollision(board))
-    {
-        rotation = prevRotation;
-        return false;
-    }
-    return true;
+    return RotateWithCheckCollision(board, false);
 }
 
 bool Tetromino::HardDrop(GameBoard& board)
@@ -179,15 +179,47 @@ bool Tetromino::HardDrop(GameBoard& board)
 
 bool Tetromino::Rotate180(const GameBoard& board)
 {
-    int prevRotation = rotation;
-    rotation = (rotation + 2) % 4;
+    rotation = (rotation + 1) % 4;
+    return RotateWithCheckCollision(board, true);
+}
 
-    if (CheckCollision(board))
+bool Tetromino::TryWallKick(const GameBoard& board, int oldRotation, int newRotation)
+{
+    const Offset* wallKickTable = (type == TYPE_I) ? WallKickDataI : WallKickDataNormal;
+
+    for (int i = 0; i < 5; i++)
     {
-        rotation = prevRotation;
-        return false;
+        int dx = wallKickTable[i].x;
+        int dy = wallKickTable[i].y;
+
+        x += dx;
+        y += dy;
+        rotation = newRotation;
+
+        if (!CheckCollision(board)) // 충돌 없이 비어 있으면 성공
+            return true;
+
+        x -= dx;
+        y -= dy;
+        rotation = oldRotation;
     }
-    return true;
+
+    return false; // 완전 실패
+}
+
+bool Tetromino::RotateWithCheckCollision(const GameBoard& board, bool clockwise)
+{
+    int oldRotation = rotation;
+    int newRotation = (rotation + (clockwise ? 1 : 3)) % 4;
+
+    rotation = newRotation;
+    if (!CheckCollision(board))
+    {
+        return true;
+    }
+
+    rotation = oldRotation;
+    return TryWallKick(board, oldRotation, newRotation);
 }
 
 bool Tetromino::CheckCollision(const GameBoard& board)

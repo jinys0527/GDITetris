@@ -14,24 +14,6 @@ void PlayScene::Initialize(NzWndBase* pWnd)
 {
     m_pGame = dynamic_cast<Tetris*>(pWnd);
     assert(m_pGame != nullptr);
-    //m_pGameBoard = new GameBoard(0, 0, 32);
-
-    //// SpriteSheet 가져오기
-    //m_pSpriteSheet = m_pGame->GetBricksSpriteSheet();
-    //if (!m_pSpriteSheet) return;
-
-    //Background* pNewObject = new Background(ObjectType::BACKGROUND);
-    //pNewObject->SetPosition(0.0f, 0.0f);
-
-    //int width = m_pGame->GetWidth();
-    //int height = m_pGame->GetHeight();
-
-    //pNewObject->SetWidth(252);
-    //pNewObject->SetHeight(200);
-
-    //pNewObject->SetBitmapInfo(m_pGame->GetUIBitmapInfo());
-
-    //m_pBackground = pNewObject;
 }
 
 void PlayScene::FixedUpdate()
@@ -156,7 +138,10 @@ void PlayScene::OnKeyDown(int key)
     {
     case VK_UP:
     case 'X':
-        m_pTetromino->RotateCW(*m_pGameBoard);
+        if(m_pTetromino->GetY() > 1)
+        {
+            m_pTetromino->RotateCW(*m_pGameBoard);
+        }
         break;
     case VK_LEFT:
         m_pTetromino->MoveLeft(*m_pGameBoard);
@@ -182,14 +167,20 @@ void PlayScene::OnKeyDown(int key)
         break;
     case VK_CONTROL:
     case 'Z':
-        m_pTetromino->RotateCCW(*m_pGameBoard);
+        if (m_pTetromino->GetY() > 1)
+        {
+            m_pTetromino->RotateCCW(*m_pGameBoard);
+        }
         break;
     case VK_SHIFT:
     case 'C':
         Hold();
         break;
     case 'A':
-        m_pTetromino->Rotate180(*m_pGameBoard);
+        if (m_pTetromino->GetY() > 1)
+        {
+            m_pTetromino->Rotate180(*m_pGameBoard);
+        }
         break;
     }
 }

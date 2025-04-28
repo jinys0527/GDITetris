@@ -28,6 +28,8 @@ public:
 	bool HardDrop(GameBoard& board);
 	bool Rotate180(const GameBoard& board);
 
+	bool TryWallKick(const GameBoard& board, int oldRotation, int newRotation);
+	bool RotateWithCheckCollision(const GameBoard& board, bool clockwise);
 	bool CheckCollision(const GameBoard& board);
 
 	void SetPosition(int x, int y) { this->x = x; this->y = y; }
