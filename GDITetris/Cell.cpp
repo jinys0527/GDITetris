@@ -22,21 +22,27 @@ GameBoard::GameBoard(int x, int y, int size) : boardX(x), boardY(y), cellSize(si
 
 void GameBoard::InitializeBoard()
 {
-	for (int y = 0; y < 21; y++)
+	for (int y = 0; y <= maxYIndex; y++)
 	{
-		for (int x = 0; x < 12; x++)
+		for (int x = 0; x <= maxXIndex; x++)
 		{
 			grid[y][x].Clear();
 		}
 	}
 
-	for (int y = 0; y < 21; y++) {
+	for (int y = 0; y < 2; y++)
+	{
+		grid[y][0].Set(Tetromino::TYPE_NONE);
+		grid[y][11].Set(Tetromino::TYPE_NONE);
+	}
+
+	for (int y = 2; y <= maxYIndex; y++) {
 		grid[y][0].Set(Tetromino::TYPE_GRID);
 		grid[y][11].Set(Tetromino::TYPE_GRID);
 	}
 
-	for (int x = 0; x < 12; x++) {
-		grid[20][x].Set(Tetromino::TYPE_GRID);
+	for (int x = 0; x <= maxXIndex; x++) {
+		grid[maxYIndex][x].Set(Tetromino::TYPE_GRID);
 	}
 	int screenWidth = 0;
 	int screenHeight = 0;
@@ -47,7 +53,7 @@ void GameBoard::InitializeBoard()
 
 bool GameBoard::IsOccupied(int x, int y) const
 {
-	if (x < 0 || x >= 12 || y < 0 || y >= 21) return true;
+	if (x < 0 || x >= maxXIndex || y < 0 || y >= maxYIndex) return true;
 	return grid[y][x].occupied;
 }
 
@@ -58,27 +64,27 @@ Tetromino::eBrickType GameBoard::GetBlockType(int x, int y) const
 
 void GameBoard::SetCell(int x, int y, Tetromino::eBrickType type)
 {
-	if (x >= 0 && x < 12 && y >= 0 && y < 21) {
+	if (x >= 0 && x <= maxXIndex && y >= 0 && y <= maxYIndex) {
 		grid[y][x].Set(type);
 	}
 }
 
 void GameBoard::PositioningOnScreen(int windowWidth, int windowHeight)
 {
-	int boardWidth = 12 * cellSize;
-	int boardHeight = 21 * cellSize;
+	int boardWidth = (maxXIndex + 1) * cellSize;
+	int boardHeight = (maxYIndex + 1) * cellSize;
 
 	boardX = (windowWidth - boardWidth) / 2;
 	boardY = (windowHeight - boardHeight) / 2;
 
-	boardY += 110;
+	boardY += 80;
 }
 
 void GameBoard::Draw(HDC hdc, SpriteSheet* pSpriteSheet, Tetromino* activeTetromino, Tetromino* holdTetromino, Tetromino** nextTetrominos, int nextTetrominosSize)
 {
-	for (int y = 0; y < 21; y++)
+	for (int y = 0; y <= maxYIndex; y++)
 	{
-		for (int x = 0; x < 12; x++)
+		for (int x = 0; x <= maxXIndex; x++)
 		{
 			if (IsOccupied(x, y))
 			{
@@ -91,6 +97,7 @@ void GameBoard::Draw(HDC hdc, SpriteSheet* pSpriteSheet, Tetromino* activeTetrom
 
 	if (activeTetromino)
 	{
+		DrawGhostPiece(hdc, pSpriteSheet, activeTetromino);
 		int rotation = activeTetromino->GetRotation();
 		int baseX = activeTetromino->GetX();
 		int baseY = activeTetromino->GetY();
@@ -117,22 +124,8 @@ void GameBoard::Draw(HDC hdc, SpriteSheet* pSpriteSheet, Tetromino* activeTetrom
 	{
 		int holdX;
 		int holdY;
-		if (holdTetromino->GetType() == Tetromino::TYPE_I)
-		{
-			holdX = 200;
-			holdY = 275;
-		}
-		else if (holdTetromino->GetType() == Tetromino::TYPE_O)
-		{
-			holdX = 170;
-			holdY = 295;
-		}
-		else
-		{
-			holdX = 150;
-			holdY = 295;
-		}
 		
+		PositioningHoldBlock(holdX, holdY, holdTetromino);
 
 		int rotation = holdTetromino->GetRotation();
 
@@ -181,21 +174,7 @@ void GameBoard::Draw(HDC hdc, SpriteSheet* pSpriteSheet, Tetromino* activeTetrom
 			{
 				int nextX, nextY;
 
-				if (nextTetrominos[i]->GetType() == Tetromino::TYPE_I)
-				{
-					nextX = 1080;
-					nextY = 185 + i * 120; // i번째에 따라 y축 조금씩 띄우기
-				}
-				else if (nextTetrominos[i]->GetType() == Tetromino::TYPE_O)
-				{
-					nextX = 1050;
-					nextY = 205 + i * 120; 
-				}
-				else
-				{
-					nextX = 1030;
-					nextY = 205 + i * 120;
-				}
+				PositioningNextBlock(nextX, nextY, i, nextTetrominos[i]);
 
 				int rotation = nextTetrominos[i]->GetRotation();
 
@@ -248,7 +227,220 @@ void GameBoard::DrawBlock(int x, int y, Tetromino::eBrickType type, HDC hdc, Spr
 	int spriteIndex = static_cast<int>(type);
 
 	// 스프라이트 그리기
-	pSpriteSheet->DrawSprite(hdc, spriteIndex, x, y, cellSize, cellSize);
+	pSpriteSheet->DrawSprite(hdc, spriteIndex, x, y, cellSize, cellSize, 255);
+}
+
+void GameBoard::DrawGhostPiece(HDC hdc, SpriteSheet* pSpriteSheet, Tetromino* activeTetromino)
+{
+	if (!activeTetromino) return;
+
+	int originalX = activeTetromino->GetX();
+	int originalY = activeTetromino->GetY();
+	int rotation = activeTetromino->GetRotation();
+	Tetromino::eBrickType type = activeTetromino->GetType();
+
+	int topHeight[12];
+	for (int x = 0; x < maxXIndex; x++) {
+		topHeight[x] = maxYIndex; // 초기값은 보드 맨 아래
+		// 위에서부터 아래로 검사하여 첫 블록 위치 찾기
+		for (int y = 2; y < maxYIndex; y++) {
+			if (IsOccupied(x, y)) {
+				topHeight[x] = y;
+				break;
+			}
+		}
+	}
+
+	// 테트로미노의 각 열마다 떨어질 위치 계산
+	int dropDistance = 100; // 충분히 큰 값으로 초기화
+
+	// 테트로미노의 가장 아래 블록 위치
+	int lowestBlockByColumn[4] = { -1, -1, -1, -1 };
+
+	// 테트로미노의 각 열에서 가장 아래 블록 위치 찾기
+	for (int i = 0; i < 4; i++) {
+		for (int j = 3; j >= 0; j--) {
+			if (activeTetromino->GetBlock(rotation, j, i) != 0) {
+				lowestBlockByColumn[i] = j;
+				break;
+			}
+		}
+	}
+
+	// 각 열에 대해 낙하 거리 계산
+	for (int i = 0; i < 4; i++) {
+		if (lowestBlockByColumn[i] != -1) { // 이 열에 블록이 있으면
+			int x = originalX + i;
+
+			if (x >= 0 && x <= maxXIndex) { // 유효한 x 좌표면
+				int blockBottom = originalY + lowestBlockByColumn[i];
+				int distance = topHeight[x] - blockBottom - 1;
+				dropDistance = min(dropDistance, distance);
+			}
+		}
+	}
+
+	// 안전 체크
+	if (dropDistance < 0) dropDistance = 0;
+	if (dropDistance > maxYIndex) dropDistance = maxYIndex;
+
+	// 고스트 피스의 Y 위치 계산
+	int ghostY = originalY + dropDistance;
+
+	// 고스트 피스 그리기
+	for (int j = 0; j < 4; j++) {
+		for (int i = 0; i < 4; i++) {
+			if (activeTetromino->GetBlock(rotation, j, i) != 0) {
+				int x = originalX + i;
+				int y = ghostY + j;
+
+				// 화면 안에 있는지 확인
+				if (y >= 0 && y <= maxYIndex && x >= 0 && x <= maxXIndex) {
+					int drawX = boardX + (x * cellSize);
+					int drawY = boardY + (y * cellSize);
+
+					DrawGhostBlock(drawX, drawY, type, hdc, pSpriteSheet);
+				}
+			}
+		}
+	}
+}
+
+void GameBoard::DrawGhostBlock(int x, int y, Tetromino::eBrickType type, HDC hdc, SpriteSheet* pSpriteSheet)
+{
+	if (type < 0 || type >= Tetromino::TYPE_MAX || !pSpriteSheet)
+		return;
+
+	int spriteIndex = static_cast<int>(type);
+
+	pSpriteSheet->DrawSprite(hdc, spriteIndex, x, y, cellSize, cellSize, 128);
+}
+
+void GameBoard::PositioningHoldBlock(int& x, int& y, Tetromino* holdTetromino)
+{
+	if (holdTetromino->GetType() == Tetromino::TYPE_I)
+	{
+		switch (holdTetromino->GetRotation())
+		{
+		case 0:
+			x = 200;
+			y = 275;
+			break;
+		case 1:
+			x = 120;
+			y = 325;
+			break;
+		case 2:
+			x = 230;
+			y = 250;
+			break;
+		case 3:
+			x = 130;
+			y = 325;
+			break;
+		}
+	}
+	else if (holdTetromino->GetType() == Tetromino::TYPE_O)
+	{
+		x = 170;
+		y = 325;
+	}
+	else if (holdTetromino->GetType() == Tetromino::TYPE_J || holdTetromino->GetType() == Tetromino::TYPE_L)
+	{
+		switch (holdTetromino->GetRotation())
+		{
+		case 0:
+			x = 185;
+			y = 320;
+			break;
+		case 1:
+			x = 170;
+			y = 310;
+			break;
+		case 2:
+			x = 185;
+			y = 300;
+			break;
+		case 3:
+			x = 200;
+			y = 310;
+			break;
+		}
+	}
+	else if (holdTetromino->GetType() == Tetromino::TYPE_S || holdTetromino->GetType() == Tetromino::TYPE_Z)
+	{
+		switch (holdTetromino->GetRotation())
+		{
+		case 0:
+			x = 185;
+			y = 320;
+			break;
+		case 1:
+			x = 165;
+			y = 315;
+			break;
+		case 2:
+			x = 185;
+			y = 300;
+			break;
+		case 3:
+			x = 195;
+			y = 310;
+			break;
+		}
+	}
+	else
+	{
+		switch (holdTetromino->GetRotation())
+		{
+		case 0:
+			x = 185;
+			y = 320;
+			break;
+		case 1:
+			x = 170;
+			y = 310;
+			break;
+		case 2:
+			x = 185;
+			y = 300;
+			break;
+		case 3:
+			x = 190;
+			y = 310;
+			break;
+		}
+
+	}
+}
+
+void GameBoard::PositioningNextBlock(int& x, int& y, int index, Tetromino* nextTetromino)
+{
+	if (nextTetromino->GetType() == Tetromino::TYPE_I)
+	{
+		x = 1078;
+		y = 145 + index * 135;
+	}
+	else if (nextTetromino->GetType() == Tetromino::TYPE_O)
+	{
+		x = 1048;
+		y = 185 + index * 135;
+	}
+	else if (nextTetromino->GetType() == Tetromino::TYPE_L || nextTetromino->GetType() == Tetromino::TYPE_J)
+	{
+		x = 1060;
+		y = 195 + index * 135;
+	}
+	else if (nextTetromino->GetType() == Tetromino::TYPE_S || nextTetromino->GetType() == Tetromino::TYPE_Z)
+	{
+		x = 1060;
+		y = 195 + index * 135;
+	}
+	else
+	{
+		x = 1060;
+		y = 185 + index * 135;
+	}
 }
 
 void GameBoard::FixTetrominoToBoard(GameBoard& board, Tetromino* tetromino)
@@ -262,7 +454,7 @@ void GameBoard::FixTetrominoToBoard(GameBoard& board, Tetromino* tetromino)
 				int boardX = tetromino->GetX() + i;
 				int boardY = tetromino->GetY() + j;
 
-				if (boardX >= 0 && boardX < 12 && boardY >= 0 && boardY < 21)
+				if (boardX >= 0 && boardX <= maxXIndex && boardY >= 0 && boardY <= maxYIndex)
 				{
 					board.SetCell(boardX, boardY, tetromino->GetType());
 				}
@@ -273,7 +465,7 @@ void GameBoard::FixTetrominoToBoard(GameBoard& board, Tetromino* tetromino)
 
 bool GameBoard::CheckFullLine(int y) const
 {
-	for (int x = 1; x < 11; x++)
+	for (int x = 1; x < maxXIndex; x++)
 	{
 		if (!IsOccupied(x, y))
 		{
@@ -286,14 +478,14 @@ bool GameBoard::CheckFullLine(int y) const
 
 void GameBoard::ClearLine(int y)
 {
-	for (int x = 1; x < 11; x++)
+	for (int x = 1; x < maxXIndex; x++)
 	{
 		grid[y][x].Clear();
 	}
 
 	for (int i = y; i > 1; i--)
 	{
-		for (int x = 1; x < 11; x++)
+		for (int x = 1; x < maxXIndex; x++)
 		{
 			grid[i][x] = grid[i - 1][x];
 		}
@@ -303,7 +495,7 @@ void GameBoard::ClearLine(int y)
 void GameBoard::RemoveFullLines()
 {
 	int clearedLines = 0;
-	for (int y = 0; y < 20; y++)
+	for (int y = 0; y < maxYIndex; y++)
 	{
 		if (CheckFullLine(y))
 		{
@@ -338,7 +530,7 @@ void GameBoard::RemoveFullLines()
 
 bool GameBoard::IsGameOver()
 {
-	for (int x = 1; x <= 10; x++)
+	for (int x = 1; x < maxXIndex; x++)
 	{
 		if (IsOccupied(x, 2))
 		{ 

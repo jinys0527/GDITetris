@@ -65,7 +65,7 @@ namespace renderHelp
         bool LoadFromJson(LPCWSTR jsonFilePath);
         bool LoadSprite(LPCWSTR imageFilePath);
 
-        void DrawSprite(HDC hdc, int index, int x, int y, int width, int height);
+        void DrawSprite(HDC hdc, int index, int x, int y, int width, int height, int alpha);
 
         int FindSpriteByName(const wchar_t* name) const;
 

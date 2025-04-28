@@ -39,6 +39,11 @@ public:
 
 	void Draw(HDC hdc, SpriteSheet* pSpriteSheet, Tetromino* activeTetromino, Tetromino* holdTetromino, Tetromino** nextTetrominos, int nextTetrominosSize);
 	void DrawBlock(int x, int y, Tetromino::eBrickType type, HDC hdc, SpriteSheet* pSpriteSheet);
+	void DrawGhostPiece(HDC hdc, SpriteSheet* pSpriteSheet, Tetromino* activeTetromino);
+	void DrawGhostBlock(int x, int y, Tetromino::eBrickType type, HDC hdc, SpriteSheet* pSpriteSheet);
+
+	void PositioningHoldBlock(int& x, int& y, Tetromino* holdTetromino);
+	void PositioningNextBlock(int& x, int& y, int index, Tetromino* nextTetromino);
 
 	void FixTetrominoToBoard(GameBoard& board, Tetromino* tetromino);
 
@@ -56,7 +61,7 @@ public:
 	void AddScore(int points);
 	int GetScore() const;
 private:
-	Cell grid[21][12];
+	Cell grid[23][12];
 	int boardX;
 	int boardY;
 	int cellSize;
@@ -64,4 +69,7 @@ private:
 	int level = 1;
 	int linesCleared = 0;
 	int score = 0;
+
+	int maxXIndex = 11;
+	int maxYIndex = 22;
 };

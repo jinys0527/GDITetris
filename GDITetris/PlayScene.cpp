@@ -138,10 +138,7 @@ void PlayScene::OnKeyDown(int key)
     {
     case VK_UP:
     case 'X':
-        if(m_pTetromino->GetY() > 1)
-        {
-            m_pTetromino->RotateCW(*m_pGameBoard);
-        }
+        m_pTetromino->RotateCW(*m_pGameBoard);
         break;
     case VK_LEFT:
         m_pTetromino->MoveLeft(*m_pGameBoard);
@@ -167,20 +164,14 @@ void PlayScene::OnKeyDown(int key)
         break;
     case VK_CONTROL:
     case 'Z':
-        if (m_pTetromino->GetY() > 1)
-        {
-            m_pTetromino->RotateCCW(*m_pGameBoard);
-        }
+        m_pTetromino->RotateCCW(*m_pGameBoard);
         break;
     case VK_SHIFT:
     case 'C':
         Hold();
         break;
     case 'A':
-        if (m_pTetromino->GetY() > 1)
-        {
-            m_pTetromino->Rotate180(*m_pGameBoard);
-        }
+        m_pTetromino->Rotate180(*m_pGameBoard);
         break;
     }
 }
@@ -204,7 +195,7 @@ void PlayScene::Hold()
 
     if (m_pTetromino)
     {
-        m_pTetromino->SetPosition(5, 0);
+        m_pTetromino->SetPosition(5, 2);
     }
     m_canHold = false;
 }

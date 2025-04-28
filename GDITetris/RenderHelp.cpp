@@ -413,12 +413,15 @@ namespace renderHelp
         return (m_pBitmap != nullptr);
     }
 
-    void SpriteSheet::DrawSprite(HDC hdc, int index, int x, int y, int width, int height)
+    void SpriteSheet::DrawSprite(HDC hdc, int index, int x, int y, int width, int height, int alpha)
     {
         if (index < 0 || index >= m_spriteCount || m_pBitmap == nullptr)
         {
             return ;
         }
+
+        if (alpha < 0) alpha = 0;
+        if (alpha > 255) alpha = 255;
 
         const SpriteInfo& sprite = m_pSprites[index];
 
@@ -428,7 +431,7 @@ namespace renderHelp
         BLENDFUNCTION bf;
         bf.BlendOp = AC_SRC_OVER;
         bf.BlendFlags = 0;
-        bf.SourceConstantAlpha = 255;
+        bf.SourceConstantAlpha = alpha;
         bf.AlphaFormat = AC_SRC_ALPHA;
 
         AlphaBlend(hdc, x, y, width, height, memDC, sprite.x, sprite.y, sprite.width, sprite.height, bf);

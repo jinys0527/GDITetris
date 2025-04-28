@@ -233,7 +233,7 @@ bool Tetromino::CheckCollision(const GameBoard& board)
                 int boardX = x + i;
                 int boardY = y + j;
 
-                if (boardX < 0 || boardX >= 12 || boardY < 0 || boardY >= 21)
+                if (boardX < 0 || boardX >= 12 || boardY < 0 || boardY >= 22)
                     return true;
 
                 if (board.IsOccupied(boardX, boardY))
