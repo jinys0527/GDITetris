@@ -17,6 +17,7 @@ public:
 		TYPE_GRID,		//gray	
 		TYPE_MAX
 	};
+
 	Tetromino(eBrickType brickType);
 	virtual ~Tetromino() {}
 

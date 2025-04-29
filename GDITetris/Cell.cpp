@@ -410,7 +410,6 @@ void GameBoard::PositioningHoldBlock(int& x, int& y, Tetromino* holdTetromino)
 			y = 310;
 			break;
 		}
-
 	}
 }
 
@@ -463,6 +462,54 @@ void GameBoard::FixTetrominoToBoard(GameBoard& board, Tetromino* tetromino)
 	}
 }
 
+bool GameBoard::CheckTSpin(Tetromino* tetromino)
+{
+	if (!tetromino || tetromino->GetType() != Tetromino::TYPE_T)
+		return false;
+
+	int tX = tetromino->GetX();
+	int tY = tetromino->GetY();
+
+	int centerX = tX + 1;
+	int centerY = tY + 1;
+
+	int cornerCoords[4][2] = {
+		{centerX - 1, centerY - 1},
+		{centerX - 1, centerY + 1},
+		{centerX + 1, centerY - 1},
+		{centerX + 1, centerY + 1},
+	};
+
+	int occupiedCorners = 0;
+	for (int i = 0; i < 4; i++)
+	{
+		int x = cornerCoords[i][0];
+		int y = cornerCoords[i][1];
+
+		if (x < 0 || x > maxXIndex || y < 0 || y > maxYIndex || IsOccupied(x, y))
+		{
+			occupiedCorners++;
+		}
+	}
+
+	return occupiedCorners >= 3;
+}
+
+bool GameBoard::CheckPerfectClear()
+{
+	for (int y = 2; y < maxYIndex - 1; y++)
+	{
+		for (int x = 1; x < maxXIndex; x++)
+		{
+			if (IsOccupied(x, y))
+			{
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
 bool GameBoard::CheckFullLine(int y) const
 {
 	for (int x = 1; x < maxXIndex; x++)
@@ -492,10 +539,10 @@ void GameBoard::ClearLine(int y)
 	}
 }
 
-void GameBoard::RemoveFullLines()
+int GameBoard::RemoveFullLines()
 {
 	int clearedLines = 0;
-	for (int y = 0; y < maxYIndex; y++)
+	for (int y = 2; y < maxYIndex; y++)
 	{
 		if (CheckFullLine(y))
 		{
@@ -504,28 +551,7 @@ void GameBoard::RemoveFullLines()
 		}
 	}
 
-	if (clearedLines > 0)
-	{
-		int points = 0;
-		switch (clearedLines)
-		{
-		case 1:
-			points = 100;
-			break;
-		case 2:
-			points = 300;
-			break;
-		case 3:
-			points = 500;
-			break;
-		case 4:
-			points = 800;
-			break;
-		}
-		linesCleared += clearedLines;
-		UpdateLevel();
-		AddScore(points);
-	}
+	return clearedLines;
 }
 
 bool GameBoard::IsGameOver()
@@ -540,27 +566,12 @@ bool GameBoard::IsGameOver()
 	return false;
 }
 
-int GameBoard::GetLevel() const
+int GameBoard::GetMaxXIndex() const
 {
-	return level;
+	return maxXIndex;
 }
 
-void GameBoard::UpdateLevel()
+int GameBoard::GetMaxYIndex() const
 {
-	level = (linesCleared / 10) + 1;
-}
-
-int GameBoard::GetLinesCleared() const
-{
-	return linesCleared;
-}
-
-void GameBoard::AddScore(int points)
-{
-	score += points;
-}
-
-int GameBoard::GetScore() const
-{
-	return score;
+	return maxYIndex;
 }

@@ -30,7 +30,7 @@ void PlayScene::Update(float deltaTime)
     float baseDropTime = 500.0f; // 기본 500ms
     float levelFactor = 30.0f;   // 레벨당 30ms씩 줄어든다.
 
-    float currentDropTime = baseDropTime - ((m_pGameBoard->GetLevel() - 1) * levelFactor);
+    float currentDropTime = baseDropTime - ((GetLevel() - 1) * levelFactor);
     if (currentDropTime < 100.0f)
         currentDropTime = 100.0f;
 
@@ -44,7 +44,10 @@ void PlayScene::Update(float deltaTime)
             if (!m_pTetromino->MoveDown(*m_pGameBoard)) {
                 // 충돌 처리
                 m_pGameBoard->FixTetrominoToBoard(*m_pGameBoard, m_pTetromino);
-                m_pGameBoard->RemoveFullLines();
+                int clearedLines = m_pGameBoard->RemoveFullLines();
+                AddLinesCleard(clearedLines);
+                m_isTSpin = m_pGameBoard->CheckTSpin(m_pTetromino);
+                AddScore(clearedLines, m_isTSpin, m_combo);
 
                 delete m_pTetromino;
                 m_pTetromino = nullptr;
@@ -70,9 +73,9 @@ void PlayScene::Render(HDC hDC)
 
     m_pGameBoard->Draw(hDC, m_pSpriteSheet, m_pTetromino, m_pHoldTetromino, m_pNextTetromino, 4);
 
-    int level = m_pGameBoard->GetLevel();
-    int linesCleared = m_pGameBoard->GetLinesCleared();
-    int score = m_pGameBoard->GetScore();
+    int level = GetLevel();
+    int linesCleared = GetLinesCleared();
+    int score = GetScore();
     // 텍스트로 출력
     wchar_t levelText[32];
     wsprintf(levelText, L"%d", level);
@@ -82,6 +85,38 @@ void PlayScene::Render(HDC hDC)
 
     wchar_t scoreText[32];
     wsprintf(scoreText, L"%d", score);
+
+    wchar_t comboText[32];
+    if (m_combo > 1)
+    {
+        wsprintf(comboText, L"Combo %d!", m_combo);
+    }
+    
+    wchar_t tSpinText[32];
+    if (m_isTSpin)
+    {
+        switch (m_TSpinlinesCleared)
+        {
+        case 1:
+            wcscpy_s(tSpinText, L"T-Spin Mini!");
+            break;
+        case 2:
+            wcscpy_s(tSpinText, L"T-Spin Double!");
+            break;
+        case 3:
+            wcscpy_s(tSpinText, L"T-Spin Triple!");
+            break;
+        }
+    }
+
+    wchar_t perfectText[32];
+    wcscpy_s(perfectText, L"Perfect Clear!");
+
+    wchar_t tetrisText[32];
+    wcscpy_s(tetrisText, L"Tetris!");
+
+    wchar_t backtobackText[32];
+    wcscpy_s(backtobackText, L"Back To Back!");
 
     HFONT hFont = CreateFontW(
         40, 0, 0, 0,
@@ -125,11 +160,117 @@ void PlayScene::Render(HDC hDC)
 
     TextOutW(hDC, x, y, scoreText, scoreLength);
 
+    //콤보, T스핀, 퍼펙트, 테트리스(출력 후 다시 돌리기), 백투백
+
     // 폰트 복원
     SelectObject(hDC, hOldFont);
 
     // 폰트 객체 삭제
     DeleteObject(hFont);
+}
+
+int PlayScene::GetLevel() const
+{
+    return m_level;
+}
+
+void PlayScene::UpdateLevel()
+{
+    m_level = (m_linesCleared / 10) + 1;
+}
+
+int PlayScene::GetLinesCleared() const
+{
+    return m_linesCleared;
+}
+
+void PlayScene::AddLinesCleard(int clearedLine)
+{
+    m_linesCleared += clearedLine;
+    UpdateLevel();
+}
+
+void PlayScene::AddScore(int clearedLine, bool isTSpin, int combo)
+{
+    m_isPerfectClear = m_pGameBoard->CheckPerfectClear();
+    m_TSpinlinesCleared = 0;
+
+    if (clearedLine > 0)
+    {
+        int basePoints = 0;
+
+        if (m_isPerfectClear)
+        {
+            if (clearedLine == 4)
+            {
+                basePoints += 1800;
+                m_isTetris = true;
+            }
+            else
+            {
+                basePoints += 800;
+            }
+        }
+        
+        else
+        {
+            switch (clearedLine)
+            {
+            case 1:
+                basePoints += 100;
+                break;
+            case 2:
+                basePoints += 300;
+                break;
+            case 3:
+                basePoints += 500;
+                break;
+            case 4:
+                basePoints += 800;
+                m_isTetris = true;
+                break;
+            }
+        }
+
+        if (isTSpin)
+        {
+            basePoints *= 2;
+            m_TSpinlinesCleared = clearedLine;
+        }
+
+        bool isSpecialAction = (m_isTetris || isTSpin);
+
+        if (m_wasLastSpecialAction && isSpecialAction)
+        {
+            basePoints  = basePoints * 3 / 2;
+            m_isBackToBack = true;
+        }
+        else
+        {
+            m_isBackToBack = false;
+        }
+
+        m_wasLastSpecialAction = isSpecialAction;
+
+        if (combo > 1)
+        {
+            basePoints += 50 * (combo - 1);
+        }
+
+        m_score += basePoints * m_level;
+
+        m_combo++;
+    }
+    else
+    {
+        m_combo = 0;
+        m_wasLastSpecialAction = true;
+    }
+}
+
+int PlayScene::GetScore() const
+{
+    return m_score;
 }
 
 void PlayScene::OnKeyDown(int key)
@@ -138,21 +279,25 @@ void PlayScene::OnKeyDown(int key)
     {
     case VK_UP:
     case 'X':
-        m_pTetromino->RotateCW(*m_pGameBoard);
+        OnRotate(true, false);
         break;
     case VK_LEFT:
-        m_pTetromino->MoveLeft(*m_pGameBoard);
+        OnMove(-1, 0);
         break;
     case VK_RIGHT:
-        m_pTetromino->MoveRight(*m_pGameBoard);
+        OnMove(1, 0);
         break;
     case VK_DOWN:
-        m_pTetromino->MoveDown(*m_pGameBoard);
+        OnMove(0, 1);
         break;
     case VK_SPACE:
         if(m_pTetromino->HardDrop(*m_pGameBoard))
         {
-            m_pGameBoard->RemoveFullLines();
+            int clearedLines = m_pGameBoard->RemoveFullLines();
+            AddLinesCleard(clearedLines);
+            m_isTSpin = m_pGameBoard->CheckTSpin(m_pTetromino);
+            AddScore(clearedLines, m_isTSpin, m_combo);
+
             delete m_pTetromino;
             m_pTetromino = nullptr;
         }
@@ -164,17 +309,70 @@ void PlayScene::OnKeyDown(int key)
         break;
     case VK_CONTROL:
     case 'Z':
-        m_pTetromino->RotateCCW(*m_pGameBoard);
+        OnRotate(false, false);
         break;
     case VK_SHIFT:
     case 'C':
         Hold();
         break;
     case 'A':
-        m_pTetromino->Rotate180(*m_pGameBoard);
+        OnRotate(true, true);
         break;
     }
 }
+
+void PlayScene::OnMove(int dx, int dy)
+{
+    if (!m_pTetromino) return;
+
+    bool moved = false;
+    if (dx < 0)
+    {
+        moved = m_pTetromino->MoveLeft(*m_pGameBoard);
+    }
+    else if(dx > 0)
+    {
+        moved = m_pTetromino->MoveRight(*m_pGameBoard);
+    }
+
+    if (dy > 0)
+    {
+        moved = m_pTetromino->MoveDown(*m_pGameBoard);
+    }
+
+    if (moved)
+    {
+        m_wasLastMoveRotation = false;
+    }
+}
+
+void PlayScene::OnRotate(bool clockwise, bool is180)
+{
+    if (!m_pTetromino) return;
+
+    bool rotated = false;
+    if (clockwise)
+    {
+        if (is180)
+        {
+            rotated = m_pTetromino->Rotate180(*m_pGameBoard);
+        }
+        else
+        {
+            rotated = m_pTetromino->RotateCW(*m_pGameBoard);
+        }
+    }
+    else
+    {
+        rotated = m_pTetromino->RotateCCW(*m_pGameBoard);
+    }
+
+    if (rotated)
+    {
+        m_wasLastMoveRotation = true;
+    }
+}
+
 
 void PlayScene::Hold()
 {

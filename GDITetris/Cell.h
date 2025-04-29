@@ -47,28 +47,23 @@ public:
 
 	void FixTetrominoToBoard(GameBoard& board, Tetromino* tetromino);
 
+	bool CheckTSpin(Tetromino* tetromino);
+	bool CheckPerfectClear();
+
 	bool CheckFullLine(int y) const;
 	void ClearLine(int y);
-	void RemoveFullLines();
+	int RemoveFullLines();
 
 	bool IsGameOver();
 
-	int GetLevel() const;
-	void UpdateLevel();
+	int GetMaxXIndex() const;
+	int GetMaxYIndex() const;
 
-	int GetLinesCleared() const;
-
-	void AddScore(int points);
-	int GetScore() const;
 private:
 	Cell grid[23][12];
 	int boardX;
 	int boardY;
 	int cellSize;
-
-	int level = 1;
-	int linesCleared = 0;
-	int score = 0;
 
 	int maxXIndex = 11;
 	int maxYIndex = 22;
