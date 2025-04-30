@@ -8,6 +8,7 @@ class GameObjectBase;
 class GameObject;
 class Tetris;
 class GameBoard;
+class Background;
 
 namespace renderHelp
 {
@@ -18,7 +19,7 @@ class PlayScene :public Scene
 {
     using SpriteSheet = renderHelp::SpriteSheet;
  public:
-     PlayScene() : mt(std::random_device{}()), m_dist(0, Tetromino::TYPE_GRID - 1), m_bgmStarted(false) {}
+     PlayScene() : mt(std::random_device{}()), m_dist(0, Tetromino::TYPE_GRID - 1), m_pSoundManager(nullptr), m_bgmStarted(false) {}
     ~PlayScene() override = default;
 
     void Initialize(NzWndBase* pWnd) override;
@@ -69,6 +70,7 @@ private:
     Tetromino* m_pHoldTetromino = nullptr;
 
     GameObjectBase* m_pBackground = nullptr;
+    Background* m_pGameover = nullptr;
 
     bool m_canHold = true;
     bool m_wasLastMoveRotation = false;

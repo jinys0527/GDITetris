@@ -5,7 +5,6 @@ enum SceneType
 {
     SCENE_TITLE = 0,
     SCENE_PLAY,
-    SCENE_ENDING,
     SCENE_MAX
 };
 

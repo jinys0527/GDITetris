@@ -58,7 +58,7 @@ private:
 
 #pragma endregion
     int m_eCurrentScene = SCENE_TITLE;
-    Scene* m_pScenes[SceneType::SCENE_MAX] = { nullptr, nullptr, nullptr };
+    Scene* m_pScenes[SceneType::SCENE_MAX] = { nullptr, nullptr };
 
     SoundManager m_soundManager;
 

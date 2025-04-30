@@ -45,9 +45,6 @@
     <ClCompile Include="Utillity.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="EndingScene.cpp">
-      <Filter>소스 파일\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="PlayScene.cpp">
       <Filter>소스 파일\Scene</Filter>
     </ClCompile>
@@ -88,9 +85,6 @@
     </ClInclude>
     <ClInclude Include="Utillity.h">
       <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="EndingScene.h">
-      <Filter>헤더 파일\Scene</Filter>
     </ClInclude>
     <ClInclude Include="PlayScene.h">
       <Filter>헤더 파일\Scene</Filter>

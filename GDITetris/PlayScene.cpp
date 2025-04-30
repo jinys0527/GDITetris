@@ -35,111 +35,114 @@ void PlayScene::Update(float deltaTime)
 	if (currentDropTime < 100.0f)
 		currentDropTime = 100.0f;
 
-	if (m_pTetromino) {
-		time += deltaTime;
+	if(!isGameover)
+	{
+		if (m_pTetromino) {
+			time += deltaTime;
 
-		if (keyLeftPressed)
-		{
-			if (!dasActive)
+			if (keyLeftPressed)
 			{
-				dasTimer += deltaTime;
-				if (dasTimer >= DAS_DELAY)
+				if (!dasActive)
 				{
-					dasActive = true;
-					arrTimer = 0;
-				}
-			}
-			else
-			{
-				arrTimer += deltaTime;
-				if (arrTimer >= ARR_SPEED)
-				{
-					OnMove(-1, 0);
-					if (m_pSoundManager)
+					dasTimer += deltaTime;
+					if (dasTimer >= DAS_DELAY)
 					{
-						m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_MOVE, 0.25f);
+						dasActive = true;
+						arrTimer = 0;
 					}
-					m_lastAction = ACTION_MOVE;
-					arrTimer = 0;
-				}
-			}
-		}
-
-		if (keyRightPressed)
-		{
-			if (!dasActive)
-			{
-				dasTimer += deltaTime;
-				if (dasTimer >= DAS_DELAY)
-				{
-					dasActive = true;
-					arrTimer = 0;
-				}
-			}
-			else
-			{
-				arrTimer += deltaTime;
-				if (arrTimer >= ARR_SPEED)
-				{
-					OnMove(1, 0);
-					if (m_pSoundManager)
-					{
-						m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_MOVE, 0.25f);
-					}
-					m_lastAction = ACTION_MOVE;
-					arrTimer = 0;
-				}
-			}
-		}
-
-		if (time > currentDropTime)
-		{
-			time = 0.0f;
-
-			if (!m_pTetromino->MoveDown(*m_pGameBoard)) {
-				// 面倒 贸府
-				m_pGameBoard->FixTetrominoToBoard(*m_pGameBoard, m_pTetromino);
-				int clearedLines = m_pGameBoard->RemoveFullLines();
-				AddLinesCleard(clearedLines);
-
-				if (m_lastAction == ACTION_ROTATE)
-				{
-					m_isTSpin = m_pGameBoard->CheckTSpin(m_pTetromino);
 				}
 				else
 				{
-					m_isTSpin = false;
-				}
-
-				AddScore(clearedLines, m_isTSpin, m_combo);
-
-				delete m_pTetromino;
-				m_pTetromino = nullptr;
-
-				if (m_pGameBoard->IsGameOver())
-				{
-					gameoverTimer += deltaTime;
-					if (!isGameover)
+					arrTimer += deltaTime;
+					if (arrTimer >= ARR_SPEED)
 					{
-						isGameover = true;
+						OnMove(-1, 0);
 						if (m_pSoundManager)
 						{
-							m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_GAMEOVER, 0.4f);
+							m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_MOVE, 0.25f);
 						}
-
-					}
-
-					if (gameoverTimer >= GAMEOVER_DELAY)
-					{
-						m_pGame->ChangeScene(SCENE_ENDING);
+						m_lastAction = ACTION_MOVE;
+						arrTimer = 0;
 					}
 				}
 			}
+
+			if (keyRightPressed)
+			{
+				if (!dasActive)
+				{
+					dasTimer += deltaTime;
+					if (dasTimer >= DAS_DELAY)
+					{
+						dasActive = true;
+						arrTimer = 0;
+					}
+				}
+				else
+				{
+					arrTimer += deltaTime;
+					if (arrTimer >= ARR_SPEED)
+					{
+						OnMove(1, 0);
+						if (m_pSoundManager)
+						{
+							m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_MOVE, 0.25f);
+						}
+						m_lastAction = ACTION_MOVE;
+						arrTimer = 0;
+					}
+				}
+			}
+
+			if (time > currentDropTime)
+			{
+				time = 0.0f;
+
+				if (!m_pTetromino->MoveDown(*m_pGameBoard)) {
+					// 面倒 贸府
+					m_pGameBoard->FixTetrominoToBoard(*m_pGameBoard, m_pTetromino);
+					int clearedLines = m_pGameBoard->RemoveFullLines();
+					AddLinesCleard(clearedLines);
+
+					if (m_lastAction == ACTION_ROTATE)
+					{
+						m_isTSpin = m_pGameBoard->CheckTSpin(m_pTetromino);
+					}
+					else
+					{
+						m_isTSpin = false;
+					}
+
+					AddScore(clearedLines, m_isTSpin, m_combo);
+
+					delete m_pTetromino;
+					m_pTetromino = nullptr;
+				}
+			}
+		}
+		else
+		{
+			RandomGenerateTetromino();
 		}
 	}
-	else
+	if (m_pGameBoard->IsGameOver())
 	{
-		RandomGenerateTetromino();
+		gameoverTimer += deltaTime;
+		if (!isGameover)
+		{
+			isGameover = true;
+			if (m_pSoundManager)
+			{
+				m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_GAMEOVER, 0.4f);
+				m_pSoundManager->StopBGM();
+				m_bgmStarted = false;
+			}
+		}
+
+		if (gameoverTimer >= GAMEOVER_DELAY)
+		{
+			m_pGame->ChangeScene(SCENE_TITLE);
+		}
 	}
 }
 
@@ -283,6 +286,11 @@ void PlayScene::Render(HDC hDC)
 	if (m_isBackToBack)
 	{
 		TextOutW(hDC, x, 900, backtobackText, backtobackLength);
+	}
+
+	if (isGameover)
+	{
+		m_pGameover->DrawBitmap(hDC, 427, 360, 460, 240);
 	}
 
 	// 迄飘 汗盔
@@ -532,126 +540,127 @@ void PlayScene::Init()
 
 void PlayScene::OnKeyDown(int key)
 {
-	switch (key)
+	if(!isGameover)
 	{
-	case VK_UP:
-	case 'X':
-		if (OnRotate(true, false))
+		switch (key)
 		{
-			if (m_pSoundManager)
-			{
-				m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_ROTATE, 0.3f);
-			}
-			m_lastAction = ACTION_ROTATE;
-		}
-		break;
-	case VK_LEFT:
-		if (!keyLeftPressed)
-		{
-			if (OnMove(-1, 0))
+		case VK_UP:
+		case 'X':
+			if (OnRotate(true, false))
 			{
 				if (m_pSoundManager)
 				{
-					m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_MOVE, 0.25f);
+					m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_ROTATE, 0.3f);
 				}
-				keyLeftPressed = true;
-				dasTimer = 0;
-				dasActive = false;
-				m_lastAction = ACTION_MOVE;
+				m_lastAction = ACTION_ROTATE;
 			}
-		}
-		break;
-	case VK_RIGHT:
-		if (!keyRightPressed)
-		{
-			if (OnMove(1, 0))
+			break;
+		case VK_LEFT:
+			if (!keyLeftPressed)
+			{
+				if (OnMove(-1, 0))
+				{
+					if (m_pSoundManager)
+					{
+						m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_MOVE, 0.25f);
+					}
+					keyLeftPressed = true;
+					dasTimer = 0;
+					dasActive = false;
+					m_lastAction = ACTION_MOVE;
+				}
+			}
+			break;
+		case VK_RIGHT:
+			if (!keyRightPressed)
+			{
+				if (OnMove(1, 0))
+				{
+					if (m_pSoundManager)
+					{
+						m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_MOVE, 0.25f);
+					}
+					keyRightPressed = true;
+					dasTimer = 0;
+					dasActive = false;
+					m_lastAction = ACTION_MOVE;
+				}
+			}
+			break;
+		case VK_DOWN:
+			OnMove(0, 1);
+			m_lastAction = ACTION_DROP;
+			break;
+		case VK_SPACE:
+			m_lastAction = ACTION_DROP;
+			if (m_pTetromino->HardDrop(*m_pGameBoard))
 			{
 				if (m_pSoundManager)
 				{
-					m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_MOVE, 0.25f);
+					m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_HARDDROP, 0.25f);
 				}
-				keyRightPressed = true;
-				dasTimer = 0;
-				dasActive = false;
-				m_lastAction = ACTION_MOVE;
-			}
-		}
-		break;
-	case VK_DOWN:
-		OnMove(0, 1);
-		m_lastAction = ACTION_DROP;
-		break;
-	case VK_SPACE:
-		m_lastAction = ACTION_DROP;
-		if (m_pTetromino->HardDrop(*m_pGameBoard))
-		{
-			if (m_pSoundManager)
-			{
-				m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_HARDDROP, 0.25f);
-			}
-			int clearedLines = m_pGameBoard->RemoveFullLines();
-			AddLinesCleard(clearedLines);
-			m_isTSpin = false;
-			AddScore(clearedLines, m_isTSpin, m_combo);
+				int clearedLines = m_pGameBoard->RemoveFullLines();
+				AddLinesCleard(clearedLines);
+				m_isTSpin = false;
+				AddScore(clearedLines, m_isTSpin, m_combo);
 
-			delete m_pTetromino;
-			m_pTetromino = nullptr;
-		}
+				delete m_pTetromino;
+				m_pTetromino = nullptr;
+			}
+			break;
+		case VK_CONTROL:
+		case 'Z':
+			if (OnRotate(false, false))
+			{
+				if (m_pSoundManager)
+				{
+					m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_ROTATE, 0.3f);
+				}
+				m_lastAction = ACTION_ROTATE;
+			}
 
-		if (m_pGameBoard->IsGameOver())
-		{
-			m_pGame->ChangeScene(SCENE_ENDING);
-		}
-		break;
-	case VK_CONTROL:
-	case 'Z':
-		if (OnRotate(false, false))
-		{
-			if (m_pSoundManager)
+			break;
+		case VK_SHIFT:
+		case 'C':
+			if (Hold())
 			{
-				m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_ROTATE, 0.3f);
+				if (m_pSoundManager)
+				{
+					m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_HOLD, 0.35f);
+				}
 			}
-			m_lastAction = ACTION_ROTATE;
-		}
-
-		break;
-	case VK_SHIFT:
-	case 'C':
-		if (Hold())
-		{
-			if (m_pSoundManager)
+			break;
+		case 'A':
+			if (OnRotate(true, true))
 			{
-				m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_HOLD, 0.35f);
+				if (m_pSoundManager)
+				{
+					m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_ROTATE, 0.3f);
+				}
+				m_lastAction = ACTION_ROTATE;
 			}
+			break;
 		}
-		break;
-	case 'A':
-		if (OnRotate(true, true))
-		{
-			if (m_pSoundManager)
-			{
-				m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_ROTATE, 0.3f);
-			}
-			m_lastAction = ACTION_ROTATE;
-		}
-		break;
 	}
 }
 
 void PlayScene::OnKeyUp(int key)
 {
-	switch (key)
+	if(!isGameover)
 	{
-	case VK_LEFT:
-		keyLeftPressed = false;
-		dasTimer = 0;
-		dasActive = false;
-		break;
-	case VK_RIGHT:
-		keyRightPressed = false;
-		dasTimer = 0;
-		dasActive = false;
-		break;
+		switch (key)
+		{
+		case VK_LEFT:
+			keyLeftPressed = false;
+			dasTimer = 0;
+			dasActive = false;
+			break;
+		case VK_RIGHT:
+			keyRightPressed = false;
+			dasTimer = 0;
+			dasActive = false;
+			break;
+		}
 	}
 }
 
@@ -766,8 +775,15 @@ void PlayScene::RandomGenerateTetromino()
 		}
 	}
 
-	m_pTetromino = m_pNextTetromino[0];
-	m_pNextTetromino[0] = nullptr;
+	if(m_pNextTetromino[0] != nullptr)
+	{
+		m_pTetromino = m_pNextTetromino[0];
+		m_pNextTetromino[0] = nullptr;
+	}
+	else {
+		Tetromino::eBrickType randomType = static_cast<Tetromino::eBrickType>(m_dist(mt));
+		m_pTetromino = new Tetromino(randomType);
+	}
 }
 
 void PlayScene::Finalize()
@@ -781,6 +797,11 @@ void PlayScene::Finalize()
 	{
 		delete m_pBackground;
 		m_pBackground = nullptr;
+	}
+	if (m_pGameover)
+	{
+		delete m_pGameover;
+		m_pGameover = nullptr;
 	}
 	if (m_pTetromino)
 	{
@@ -827,6 +848,13 @@ void PlayScene::Enter()
 
 	m_pBackground = pNewObject;
 
+	m_pGameover = new Background(ObjectType::BACKGROUND);
+	m_pGameover->SetPosition(0.0f, 0.0f);
+
+	m_pGameover->SetWidth(460);
+	m_pGameover->SetHeight(240);
+
+	m_pGameover->SetBitmapInfo(m_pGame->GetGameoverBitmapInfo());
 
 	if (m_pSoundManager && !m_bgmStarted)
 	{
@@ -841,11 +869,8 @@ void PlayScene::Leave()
 	{
 		if (m_pSoundManager)
 		{
-			m_pSoundManager->StopBGM();
 			m_pSoundManager->StopAllSFX();
 		}
 	}
 	Finalize();
-
-
 }

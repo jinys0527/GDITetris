@@ -7,7 +7,6 @@
 #include "RenderHelp.h"
 #include "TitleScene.h"
 #include "PlayScene.h"
-#include "EndingScene.h"
 #include "SoundManager.h"
 
 using namespace learning;
@@ -75,8 +74,6 @@ bool Tetris::Initialize()
     m_pScenes[SceneType::SCENE_TITLE]->Initialize(this);
     m_pScenes[SceneType::SCENE_PLAY] = new PlayScene();
     m_pScenes[SceneType::SCENE_PLAY]->Initialize(this);
-    m_pScenes[SceneType::SCENE_ENDING] = new EndingScene();
-    m_pScenes[SceneType::SCENE_ENDING]->Initialize(this);
 
     if (!m_soundManager.Init())
     {
@@ -103,6 +100,7 @@ bool Tetris::Initialize()
     m_soundManager.LoadSound(SoundManager::SOUND_BACKTOBACK, "../Sound/sfx_b2b.wav", false);
     m_soundManager.LoadSound(SoundManager::SOUND_GAMEOVER, "../Sound/sfx_gameover.wav", false);
     m_soundManager.LoadSound(SoundManager::SOUND_BGM, "../Sound/bgm.wav", true);
+    m_soundManager.LoadSound(SoundManager::SOUND_CLICK, "../Sound/sfx_click.wav", false);
 
     return true;
 }

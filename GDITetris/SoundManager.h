@@ -27,6 +27,7 @@ public:
 		SOUND_BACKTOBACK,
 		SOUND_GAMEOVER,
 		SOUND_BGM,
+		SOUND_CLICK,
 		SOUND_COUNT
 	};
 
@@ -52,7 +53,7 @@ private:
 	FMOD::Channel* m_bgm;
 	FMOD::ChannelGroup* m_sfxGroup;
 
-	static const int MAX_SFX_CHANNELS = 19;
+	static const int MAX_SFX_CHANNELS = 20;
 	FMOD::Channel* m_sfxChannels[MAX_SFX_CHANNELS];
 	int m_nextChannel;
 

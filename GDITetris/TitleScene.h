@@ -5,6 +5,7 @@
 class GameObjectBase;
 class Background;
 class Tetris;
+class SoundManager;
 
 class TitleScene : public Scene
 {
@@ -34,6 +35,8 @@ private:
     WCHAR m_szTitle[64] = L"Title Scene";
 
     RECT m_rect = { 0, 0, 0, 0 };
+
+    SoundManager* m_pSoundManager;
 
     bool isClickedStart = false;
     bool isClickedMethod = false;
