@@ -7,6 +7,7 @@
 class GameTimer;
 class GameObjectBase;
 class GameObject;
+class SoundManager;
 
 namespace renderHelp
 {
@@ -52,17 +53,23 @@ private:
     BitmapInfo* m_pUIBitmapInfo = nullptr;
     BitmapInfo* m_pKeyBitmapInfo = nullptr;
     BitmapInfo* m_pButtonBitmapInfo = nullptr;
+    BitmapInfo* m_pGameoverBitmapInfo = nullptr;
     SpriteSheet* m_pBricksSpriteSheet = nullptr;
 
 #pragma endregion
     int m_eCurrentScene = SCENE_TITLE;
     Scene* m_pScenes[SceneType::SCENE_MAX] = { nullptr, nullptr, nullptr };
 
+    SoundManager* m_soundManager;
+
 public:
     BitmapInfo* GetBackgroundBitmapInfo() const;
     BitmapInfo* GetUIBitmapInfo() const;
     BitmapInfo* GetKeyBitmapInfo() const;
     BitmapInfo* GetButtonBitmapInfo() const;
+    BitmapInfo* GetGameoverBitmapInfo() const;
     SpriteSheet* GetBricksSpriteSheet() const { return m_pBricksSpriteSheet; }
     void ChangeScene(SceneType eSceneType);
+
+    SoundManager* GetSoundManager() { return m_soundManager; }
 };

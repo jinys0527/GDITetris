@@ -1,0 +1,62 @@
+#pragma once
+#include <fmod.hpp>
+#include <fmod_errors.h>
+#include "Windows.h"
+
+class SoundManager
+{
+public:
+	enum eSoundType
+	{
+		SOUND_MOVE,
+		SOUND_ROTATE,
+		SOUND_HARDDROP,
+		SOUND_HOLD,
+		SOUND_SINGLE,
+		SOUND_DOUBLE,
+		SOUND_TRIPLE,
+		SOUND_TETRIS,
+		SOUND_TSPIN,
+		SOUND_PERFECTCLEAR,
+		SOUND_COMBO1,
+		SOUND_COMBO2,
+		SOUND_COMBO3,
+		SOUND_COMBO4,
+		SOUND_COMBO5,
+		SOUND_COMBO6,
+		SOUND_COMBO7,
+		SOUND_BACKTOBACK,
+		SOUND_GAMEOVER,
+		SOUND_BGM,
+		SOUND_COUNT
+	};
+
+	SoundManager();
+	~SoundManager();
+
+	bool Init();
+	void Update();
+	void Release();
+
+	bool LoadSound(eSoundType type, LPCWSTR filename, bool loop);
+
+	void PlayBGM(float volume);
+	void PlaySFX(eSoundType type, float volume);
+
+	void SetSFXVolume(float volume);
+
+	void StopBGM();
+	void StopAllSFX();
+private:
+	FMOD::System* m_system;
+
+	FMOD::Channel* m_bgm;
+	FMOD::ChannelGroup* m_sfxGroup;
+
+	static const int MAX_SFX_CHANNELS = 19;
+	FMOD::Channel* m_sfxChannels[MAX_SFX_CHANNELS];
+	int m_nextChannel;
+
+	FMOD::Sound* m_sounds[SOUND_COUNT];
+};
+

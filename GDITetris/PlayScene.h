@@ -2,6 +2,7 @@
 #include "Scene.h"
 #include "Tetromino.h"
 #include <random>
+#include "SoundManager.h"
 
 class GameObjectBase;
 class GameObject;
@@ -17,7 +18,7 @@ class PlayScene :public Scene
 {
     using SpriteSheet = renderHelp::SpriteSheet;
  public:
-     PlayScene() : mt(std::random_device{}()), m_dist(0, Tetromino::TYPE_GRID - 1) {}
+     PlayScene() : mt(std::random_device{}()), m_dist(0, Tetromino::TYPE_GRID - 1), m_bgmStarted(false) {}
     ~PlayScene() override = default;
 
     void Initialize(NzWndBase* pWnd) override;
@@ -49,6 +50,14 @@ class PlayScene :public Scene
 
     void Hold();
     void RandomGenerateTetromino();
+
+    enum LastAction
+    {
+        ACTION_NONE,
+        ACTION_MOVE,
+        ACTION_ROTATE,
+        ACTION_DROP
+    };
 private:
     Tetris* m_pGame = nullptr;
 
@@ -82,6 +91,15 @@ private:
     int m_score = 0;
     int m_combo = 0;
     int m_TSpinlinesCleared = 0;
+
+    int gameoverTimer = 0;
+    const int GAMEOVER_DELAY = 200;
+    bool isGameover = false;
+
+    SoundManager* m_pSoundManager;
+    bool m_bgmStarted;
+
+    LastAction m_lastAction = ACTION_NONE;
 
     std::mt19937 mt;
     std::uniform_int_distribution<int> m_dist;

@@ -66,4 +66,4 @@ def extract_sprites_from_png(png_path, json_output_path):
     print(f"Saved {len(sprite_data)} sprites to {json_output_path}")
 
 # 예시 사용
-extract_sprites_from_png("bricks.png", "bricks.json")
+extract_sprites_from_png("ranking.png", "ranking.json")

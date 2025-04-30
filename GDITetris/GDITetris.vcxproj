@@ -137,6 +137,7 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameTimer.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="Tetris.cpp" />
     <ClCompile Include="NzWndBase.cpp" />
     <ClCompile Include="PlayScene.cpp" />
@@ -152,6 +153,7 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameTimer.h" />
     <ClInclude Include="INC_Windows.h" />
+    <ClInclude Include="SoundManager.h" />
     <ClInclude Include="Tetris.h" />
     <ClInclude Include="NzWndBase.h" />
     <ClInclude Include="PlayScene.h" />

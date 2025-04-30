@@ -8,6 +8,7 @@
 #include "TitleScene.h"
 #include "PlayScene.h"
 #include "EndingScene.h"
+#include "SoundManager.h"
 
 using namespace learning;
 using namespace renderHelp;
@@ -46,6 +47,7 @@ bool Tetris::Initialize()
     m_pUIBitmapInfo = renderHelp::CreateBitmapInfo(L"../Resource/ui.png");
     m_pKeyBitmapInfo = renderHelp::CreateBitmapInfo(L"../Resource/keyboard.png");
     m_pButtonBitmapInfo = renderHelp::CreateBitmapInfo(L"../Resource/button.png");
+    m_pGameoverBitmapInfo = renderHelp::CreateBitmapInfo(L"../Resource/gameover.png");
 
     m_pBricksSpriteSheet = new SpriteSheet();
     if (!m_pBricksSpriteSheet->LoadFromJson(L"../Resource/bricks.json") ||
@@ -56,7 +58,8 @@ bool Tetris::Initialize()
     }
 
     if (m_pBackgroundBitmapInfo == nullptr || m_pUIBitmapInfo == nullptr
-        || m_pKeyBitmapInfo == nullptr || m_pButtonBitmapInfo == nullptr)
+        || m_pKeyBitmapInfo == nullptr || m_pButtonBitmapInfo == nullptr 
+        || m_pGameoverBitmapInfo == nullptr)
     { 
         std::cout << "Bitmap Load Failed!" << std::endl;
         return false;
@@ -75,8 +78,33 @@ bool Tetris::Initialize()
     m_pScenes[SceneType::SCENE_ENDING] = new EndingScene();
     m_pScenes[SceneType::SCENE_ENDING]->Initialize(this);
 
-    return true;
+    if (!m_soundManager->Init())
+    {
+        return false;
+    }
 
+    m_soundManager->LoadSound(m_soundManager->SOUND_MOVE, L"../Sound/sfx_move", false);
+    m_soundManager->LoadSound(m_soundManager->SOUND_ROTATE, L"../Sound/sfx_rotate", false);
+    m_soundManager->LoadSound(m_soundManager->SOUND_HARDDROP, L"../Sound/sfx_harddrop", false);
+    m_soundManager->LoadSound(m_soundManager->SOUND_HOLD, L"../Sound/sfx_hold", false);
+    m_soundManager->LoadSound(m_soundManager->SOUND_SINGLE, L"../Sound/sfx_single", false);
+    m_soundManager->LoadSound(m_soundManager->SOUND_DOUBLE, L"../Sound/sfx_double", false);
+    m_soundManager->LoadSound(m_soundManager->SOUND_TRIPLE, L"../Sound/sfx_triple", false);
+    m_soundManager->LoadSound(m_soundManager->SOUND_TETRIS, L"../Sound/sfx_tetris", false);
+    m_soundManager->LoadSound(m_soundManager->SOUND_TSPIN, L"../Sound/sfx_tspin", false);
+    m_soundManager->LoadSound(m_soundManager->SOUND_PERFECTCLEAR, L"../Sound/sfx_perfectclear", false);
+    m_soundManager->LoadSound(m_soundManager->SOUND_COMBO1, L"../Sound/sfx_combo1", false);
+    m_soundManager->LoadSound(m_soundManager->SOUND_COMBO2, L"../Sound/sfx_combo2", false);
+    m_soundManager->LoadSound(m_soundManager->SOUND_COMBO3, L"../Sound/sfx_combo3", false);
+    m_soundManager->LoadSound(m_soundManager->SOUND_COMBO4, L"../Sound/sfx_combo4", false);
+    m_soundManager->LoadSound(m_soundManager->SOUND_COMBO5, L"../Sound/sfx_combo5", false);
+    m_soundManager->LoadSound(m_soundManager->SOUND_COMBO6, L"../Sound/sfx_combo6", false);
+    m_soundManager->LoadSound(m_soundManager->SOUND_COMBO7, L"../Sound/sfx_combo7", false);
+    m_soundManager->LoadSound(m_soundManager->SOUND_BACKTOBACK, L"../Sound/sfx_b2b", false);
+    m_soundManager->LoadSound(m_soundManager->SOUND_GAMEOVER, L"../Sound/sfx_gameover", false);
+    m_soundManager->LoadSound(m_soundManager->SOUND_BGM, L"../Sound/bgm", true);
+
+    return true;
 }
 
 void Tetris::Run()
@@ -107,6 +135,7 @@ void Tetris::Run()
         else
         {
             Update();
+            m_soundManager->Update();
             Render();
         }
     }
@@ -165,6 +194,11 @@ BitmapInfo* Tetris::GetKeyBitmapInfo() const
 BitmapInfo* Tetris::GetButtonBitmapInfo() const
 {
     return m_pButtonBitmapInfo;
+}
+
+BitmapInfo* Tetris::GetGameoverBitmapInfo() const
+{
+    return m_pGameoverBitmapInfo;
 }
 
 void Tetris::ChangeScene(SceneType eSceneType)

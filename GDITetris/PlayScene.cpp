@@ -14,6 +14,7 @@ void PlayScene::Initialize(NzWndBase* pWnd)
 {
     m_pGame = dynamic_cast<Tetris*>(pWnd);
     assert(m_pGame != nullptr);
+    m_pSoundManager = m_pGame->GetSoundManager();
 }
 
 void PlayScene::FixedUpdate()
@@ -54,6 +55,11 @@ void PlayScene::Update(float deltaTime)
                 if (arrTimer >= ARR_SPEED)
                 {
                     OnMove(-1, 0);
+                    if (m_pSoundManager)
+                    {
+                        m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_MOVE, 0.4f);
+                    }
+                    m_lastAction = ACTION_MOVE;
                     arrTimer = 0;
                 }
             }
@@ -76,6 +82,11 @@ void PlayScene::Update(float deltaTime)
                 if (arrTimer >= ARR_SPEED)
                 {
                     OnMove(1, 0);
+                    if (m_pSoundManager)
+                    {
+                        m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_MOVE, 0.4f);
+                    }
+                    m_lastAction = ACTION_MOVE;
                     arrTimer = 0;
                 }
             }
@@ -90,15 +101,106 @@ void PlayScene::Update(float deltaTime)
                 m_pGameBoard->FixTetrominoToBoard(*m_pGameBoard, m_pTetromino);
                 int clearedLines = m_pGameBoard->RemoveFullLines();
                 AddLinesCleard(clearedLines);
-                m_isTSpin = m_pGameBoard->CheckTSpin(m_pTetromino);
+
+                if(m_lastAction == ACTION_ROTATE)
+                {
+                    m_isTSpin = m_pGameBoard->CheckTSpin(m_pTetromino);
+                }
+                else
+                {
+                    m_isTSpin = false;
+                }
+
                 AddScore(clearedLines, m_isTSpin, m_combo);
+
+                if (m_pSoundManager)
+                {
+                    if (m_isPerfectClear)
+                    {
+                        m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_PERFECTCLEAR, 0.4f);
+                    }
+                    else if (m_isTSpin)
+                    {
+                        if (m_isBackToBack)
+                        {
+                            m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_BACKTOBACK, 0.4f);
+                        }
+                        else
+                        {
+                            m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_TSPIN, 0.4f);
+                        }
+                    }
+                    else if (m_isTetris)
+                    {
+                        if (m_isBackToBack)
+                        {
+                            m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_BACKTOBACK, 0.4f);
+                        }
+                        else
+                        {
+                            m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_TETRIS, 0.4f);
+                        }
+                    }
+                    else if (clearedLines == 1)
+                    {
+                        m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_SINGLE, 0.4f);
+                    }
+                    else if (clearedLines == 2)
+                    {
+                        m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_DOUBLE, 0.4f);
+                    }
+                    else if (clearedLines == 3)
+                    {
+                        m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_TRIPLE, 0.4f);
+                    }
+                    switch (m_combo)
+                    {
+                    case 0:
+                        break;
+                    case 1:
+                        m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_COMBO1, 0.4f);
+                        break;
+                    case 2:
+                        m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_COMBO2, 0.4f);
+                        break;
+                    case 3:
+                        m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_COMBO3, 0.4f);
+                        break;
+                    case 4:
+                        m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_COMBO4, 0.4f);
+                        break;
+                    case 5:
+                        m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_COMBO5, 0.4f);
+                        break;
+                    case 6:
+                        m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_COMBO6, 0.4f);
+                        break;
+                    default:
+                        m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_COMBO7, 0.4f);
+                        break;
+                    }
+                }
 
                 delete m_pTetromino;
                 m_pTetromino = nullptr;
 
                 if (m_pGameBoard->IsGameOver())
                 {
-                    m_pGame->ChangeScene(SCENE_ENDING);
+                    gameoverTimer += deltaTime;
+                    if (!isGameover)
+                    {
+                        isGameover = true;
+                        if (m_pSoundManager)
+                        {
+                            m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_GAMEOVER, 0.4f);
+                        }
+
+                    }
+                    
+                    if(gameoverTimer >= GAMEOVER_DELAY)
+                    {
+                        m_pGame->ChangeScene(SCENE_ENDING);
+                    }
                 }
             }
         }
@@ -122,45 +224,48 @@ void PlayScene::Render(HDC hDC)
     int score = GetScore();
     // 텍스트로 출력
     wchar_t levelText[32];
-    wsprintf(levelText, L"%d", level);
+    swprintf_s(levelText, L"%d", level);
 
     wchar_t linesText[32];
-    wsprintf(linesText, L"%d", linesCleared);
+    swprintf_s(linesText, L"%d", linesCleared);
 
     wchar_t scoreText[32];
-    wsprintf(scoreText, L"%d", score);
+    swprintf_s(scoreText, L"%d", score);
 
-    wchar_t comboText[32];
-    if (m_combo > 1)
+    wchar_t comboText[32] = L"";
+    if (m_combo > 0)
     {
-        wsprintf(comboText, L"Combo %d!", m_combo);
+        swprintf_s(comboText, L"Combo %d!", m_combo);
     }
     
-    wchar_t tSpinText[32];
+    wchar_t tSpinText[32] = L"";
     if (m_isTSpin)
     {
         switch (m_TSpinlinesCleared)
         {
+        case 0:
+            swprintf_s(tSpinText, L"T-Spin Zero!");
+            break;
         case 1:
-            wcscpy_s(tSpinText, L"T-Spin Mini!");
+            swprintf_s(tSpinText, L"T-Spin Mini!");
             break;
         case 2:
-            wcscpy_s(tSpinText, L"T-Spin Double!");
+            swprintf_s(tSpinText, L"T-Spin Double!");
             break;
         case 3:
-            wcscpy_s(tSpinText, L"T-Spin Triple!");
+            swprintf_s(tSpinText, L"T-Spin Triple!");
             break;
         }
     }
 
-    wchar_t perfectText[32];
-    wcscpy_s(perfectText, L"Perfect Clear!");
+    wchar_t perfectText[32] = L"";
+    swprintf_s(perfectText, L"Perfect Clear!");
 
-    wchar_t tetrisText[32];
-    wcscpy_s(tetrisText, L"Tetris!");
+    wchar_t tetrisText[32] = L"";
+    swprintf_s(tetrisText, L"Tetris!");
 
-    wchar_t backtobackText[32];
-    wcscpy_s(backtobackText, L"Back To Back!");
+    wchar_t backtobackText[32] = L"";
+    swprintf_s(backtobackText, L"Back To Back!");
 
     SetBkMode(hDC, TRANSPARENT);
 
@@ -173,7 +278,7 @@ void PlayScene::Render(HDC hDC)
         CLIP_DEFAULT_PRECIS,
         NONANTIALIASED_QUALITY,
         FIXED_PITCH | FF_MODERN,
-        L"Arial"
+        L"Terminal"
     );
 
     // 현재 DC에 폰트 적용
@@ -207,6 +312,46 @@ void PlayScene::Render(HDC hDC)
     TextOutW(hDC, x, y, scoreText, scoreLength);
 
     //콤보, T스핀, 퍼펙트, 테트리스(출력 후 다시 돌리기), 백투백
+    int textX = 1060;
+    
+    int comboLength = lstrlenW(comboText);
+    x = textX - positioning * (comboLength - 1);
+    if (m_combo > 0)
+    {
+        TextOutW(hDC, x, 720, comboText, comboLength);
+    }
+
+    int tSpinLength = lstrlenW(tSpinText);
+    x = textX - positioning * (tSpinLength - 1);
+
+    if (m_isTSpin && m_TSpinlinesCleared != 0)
+    {
+        TextOutW(hDC, x, 765, tSpinText, tSpinLength);
+    }
+
+    int perfectClearLength = lstrlenW(perfectText);
+    x = textX - positioning * (perfectClearLength - 1);
+
+    if (m_isPerfectClear)
+    {
+        TextOutW(hDC, x, 855, perfectText, perfectClearLength);
+    }
+
+    int tetrisLength = lstrlenW(tetrisText);
+    x = textX - positioning * (tetrisLength - 1);
+
+    if (m_isTetris)
+    {
+        TextOutW(hDC, x, 810, tetrisText, tetrisLength);
+    }
+
+    int backtobackLength = lstrlenW(backtobackText);
+    x = textX - positioning * (backtobackLength - 1);
+
+    if (m_isBackToBack)
+    {
+        TextOutW(hDC, x, 900, backtobackText, backtobackLength);
+    }
 
     // 폰트 복원
     SelectObject(hDC, hOldFont);
@@ -309,8 +454,31 @@ void PlayScene::AddScore(int clearedLine, bool isTSpin, int combo)
     }
     else
     {
+        if (isTSpin)
+        {
+            int basePoints = 100;
+            m_TSpinlinesCleared = 0;
+
+            bool isSpecialAction;
+            if (m_wasLastSpecialAction)
+            {
+                basePoints = basePoints * 3 / 2;
+                m_isBackToBack = true;
+            }
+            else
+            {
+                m_isBackToBack = false;
+            }
+
+            m_wasLastSpecialAction = isSpecialAction;
+            m_score += basePoints * m_level;
+        }
+        else
+        {
+            m_isBackToBack = false;
+        }
         m_combo = 0;
-        m_wasLastSpecialAction = true;
+        m_isTetris = false;
     }
 }
 
@@ -340,6 +508,8 @@ void PlayScene::Init()
     m_score = 0;
     m_combo = 0;
     m_TSpinlinesCleared = 0;
+
+    m_lastAction = ACTION_NONE;
 }
 
 void PlayScene::OnKeyDown(int key)
@@ -349,34 +519,55 @@ void PlayScene::OnKeyDown(int key)
     case VK_UP:
     case 'X':
         OnRotate(true, false);
+        m_lastAction = ACTION_ROTATE;
         break;
     case VK_LEFT:
         if (!keyLeftPressed)
         {
-            OnMove(-1, 0);
-            keyLeftPressed = true;
-            dasTimer = 0;
-            dasActive = false;
+            if (OnMove(-1, 0))
+            {
+                if (m_pSoundManager)
+                {
+                    m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_MOVE, 0.4f);
+                }
+                keyLeftPressed = true;
+                dasTimer = 0;
+                dasActive = false;
+                m_lastAction = ACTION_MOVE;
+            }
         }
         break;
     case VK_RIGHT:
         if(!keyRightPressed)
         {
-            OnMove(1, 0);
-            keyRightPressed = true;
-            dasTimer = 0;
-            dasActive = false;
+            if (OnMove(1, 0))
+            {
+                if (m_pSoundManager)
+                {
+                    m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_MOVE, 0.4f);
+                }
+                keyRightPressed = true;
+                dasTimer = 0;
+                dasActive = false;
+                m_lastAction = ACTION_MOVE;
+            }
         }
         break;
     case VK_DOWN:
         OnMove(0, 1);
+        m_lastAction = ACTION_DROP;
         break;
     case VK_SPACE:
+        m_lastAction = ACTION_DROP;
         if(m_pTetromino->HardDrop(*m_pGameBoard))
         {
+            if (m_pSoundManager)
+            {
+                m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_HARDDROP, 0.4f);
+            }
             int clearedLines = m_pGameBoard->RemoveFullLines();
             AddLinesCleard(clearedLines);
-            m_isTSpin = m_pGameBoard->CheckTSpin(m_pTetromino);
+            m_isTSpin = false;
             AddScore(clearedLines, m_isTSpin, m_combo);
 
             delete m_pTetromino;
@@ -390,14 +581,35 @@ void PlayScene::OnKeyDown(int key)
         break;
     case VK_CONTROL:
     case 'Z':
-        OnRotate(false, false);
+        if (OnRotate(false, false))
+        {
+            if (m_pSoundManager)
+            {
+                m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_ROTATE, 0.4f);
+            }
+            m_lastAction = ACTION_ROTATE;
+        }
+        
         break;
     case VK_SHIFT:
     case 'C':
-        Hold();
+        if (Hold())
+        {
+            if (m_pSoundManager)
+            {
+                m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_HOLD, 0.4f);
+            }
+        }
         break;
     case 'A':
-        OnRotate(true, true);
+        if(OnRotate(true, true))
+        {
+            if (m_pSoundManager)
+            {
+                m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_ROTATE, 0.4f);
+            }
+            m_lastAction = ACTION_ROTATE;
+        }
         break;
     }
 }
@@ -578,12 +790,19 @@ void PlayScene::Enter()
     int width = m_pGame->GetWidth();
     int height = m_pGame->GetHeight();
 
-    pNewObject->SetWidth(252);
-    pNewObject->SetHeight(200);
+    pNewObject->SetWidth(1280);
+    pNewObject->SetHeight(960);
 
     pNewObject->SetBitmapInfo(m_pGame->GetUIBitmapInfo());
 
     m_pBackground = pNewObject;
+
+
+    if (m_pSoundManager && !m_bgmStarted)
+    {
+        m_pSoundManager->PlayBGM(0.4f);
+        m_bgmStarted = true;
+    }
 }
 
 void PlayScene::Leave()

@@ -53,7 +53,11 @@ void GameBoard::InitializeBoard()
 
 bool GameBoard::IsOccupied(int x, int y) const
 {
-	if (x < 0 || x >= maxXIndex || y < 0 || y >= maxYIndex) return true;
+	if (x < 0 || x >= maxXIndex || y < 0 || y >= maxYIndex) 
+	{
+		return true;
+	}
+
 	return grid[y][x].occupied;
 }
 
@@ -497,7 +501,7 @@ bool GameBoard::CheckTSpin(Tetromino* tetromino)
 
 bool GameBoard::CheckPerfectClear()
 {
-	for (int y = 2; y < maxYIndex - 1; y++)
+	for (int y = maxYIndex - 1; y >= 2; y--)
 	{
 		for (int x = 1; x < maxXIndex; x++)
 		{
