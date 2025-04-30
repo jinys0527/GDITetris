@@ -26,7 +26,7 @@ public:
     void OnClicked(int x, int y) override;
 private:
 
-    GameObjectBase* m_pBackground = nullptr;
+    Background* m_pBackground = nullptr;
     Background* m_pKey = nullptr;
     Background* m_pButton = nullptr;
 

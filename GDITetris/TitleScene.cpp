@@ -11,25 +11,23 @@ void TitleScene::Initialize(NzWndBase* pWnd)
 	m_pGame = dynamic_cast<Tetris*>(pWnd);
 	assert(m_pGame != nullptr && "Game object is not initialized!");
 
-	Background* pNewObject = new Background(ObjectType::BACKGROUND);
-	pNewObject->SetPosition(0.0f, 0.0f);
+	m_pBackground = new Background(ObjectType::BACKGROUND);
+	m_pBackground->SetPosition(0.0f, 0.0f);
 
 	int width = m_pGame->GetWidth();
 	int height = m_pGame->GetHeight();
 
 	learning::SetScreenSize(width, height);
 
-	pNewObject->SetWidth(512);
-	pNewObject->SetHeight(512);
+	m_pBackground->SetWidth(1280);
+	m_pBackground->SetHeight(960);
 
-	pNewObject->SetBitmapInfo(m_pGame->GetBackgroundBitmapInfo());
+	m_pBackground->SetBitmapInfo(m_pGame->GetBackgroundBitmapInfo());
 
 	m_rect.left = width / 2 - 275;
 	m_rect.top = height / 2 + 25;
 	m_rect.right = m_rect.left + 550;
 	m_rect.bottom = m_rect.top + 100;
-
-	m_pBackground = pNewObject;
 
 	m_pKey = new Background(ObjectType::BACKGROUND);
 	m_pKey->SetPosition(0.0f, 0.0f);
@@ -42,8 +40,8 @@ void TitleScene::Initialize(NzWndBase* pWnd)
 	m_pButton = new Background(ObjectType::BACKGROUND);
 	m_pButton->SetPosition(0.0f, 0.0f);
 
-	m_pButton->SetWidth(285);
-	m_pButton->SetHeight(225);
+	m_pButton->SetWidth(297);
+	m_pButton->SetHeight(237);
 
 	m_pButton->SetBitmapInfo(m_pGame->GetButtonBitmapInfo());
 
@@ -66,8 +64,8 @@ void TitleScene::Render(HDC hDC)
 {
 	assert(m_pGame != nullptr && "Game object is not initialized!");
 
-	m_pBackground->Render(hDC, RGB(255, 0, 0));
-	m_pButton->DrawBitmap(hDC, 490, 400, 285, 225);
+	m_pBackground->DrawBitmap(hDC, 0, 0, 1280, 960);
+	m_pButton->DrawBitmap(hDC, 490, 420, 297, 237);
 
 	if (isClickedMethod)
 	{
@@ -82,14 +80,14 @@ void TitleScene::OnClicked(int x, int y)
 		m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_CLICK, 0.4f);
 	}
 
-	if (x >= 490 && x <= 775)
+	if (x >= 490 && x <= 780)
 	{
-		if (y >= 400 && y <= 500)
+		if (y >= 420 && y <= 530)
 		{
 			isClickedStart = true;
 		}
 
-		if (y >= 525 && 625)
+		if (y >= 540 && 650)
 		{
 			isClickedMethod = true;
 		}
