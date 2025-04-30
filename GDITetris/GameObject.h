@@ -147,8 +147,9 @@ public:
     void Render(HDC hdc, COLORREF color) override;
 
     void SetBitmapInfo(BitmapInfo* bitmapInfo);
-
+    void DrawBitmap(HDC hdc, int destX, int destY, int destWidth, int destHeight);
 protected:
     void DrawBitmap(HDC hdc);
+    
     BitmapInfo* m_pBitmapInfo = nullptr;
 };

@@ -37,6 +37,50 @@ void PlayScene::Update(float deltaTime)
     if (m_pTetromino) {
         time += deltaTime;
 
+        if(keyLeftPressed)
+        {
+            if (!dasActive)
+            {
+                dasTimer += deltaTime;
+                if (dasTimer >= DAS_DELAY)
+                {
+                    dasActive = true;
+                    arrTimer = 0;
+                }
+            }
+            else
+            {
+                arrTimer += deltaTime;
+                if (arrTimer >= ARR_SPEED)
+                {
+                    OnMove(-1, 0);
+                    arrTimer = 0;
+                }
+            }
+        }
+
+        if (keyRightPressed)
+        {
+            if (!dasActive)
+            {
+                dasTimer += deltaTime;
+                if (dasTimer >= DAS_DELAY)
+                {
+                    dasActive = true;
+                    arrTimer = 0;
+                }
+            }
+            else
+            {
+                arrTimer += deltaTime;
+                if (arrTimer >= ARR_SPEED)
+                {
+                    OnMove(1, 0);
+                    arrTimer = 0;
+                }
+            }
+        }
+
         if(time > currentDropTime)
         {
             time = 0.0f;
@@ -118,6 +162,8 @@ void PlayScene::Render(HDC hDC)
     wchar_t backtobackText[32];
     wcscpy_s(backtobackText, L"Back To Back!");
 
+    SetBkMode(hDC, TRANSPARENT);
+
     HFONT hFont = CreateFontW(
         40, 0, 0, 0,
         FW_BOLD,
@@ -127,7 +173,7 @@ void PlayScene::Render(HDC hDC)
         CLIP_DEFAULT_PRECIS,
         NONANTIALIASED_QUALITY,
         FIXED_PITCH | FF_MODERN,
-        L"Terminal"
+        L"Arial"
     );
 
     // 현재 DC에 폰트 적용
@@ -273,6 +319,29 @@ int PlayScene::GetScore() const
     return m_score;
 }
 
+void PlayScene::Init() 
+{
+    m_canHold = true;
+    m_wasLastMoveRotation = false;
+    m_isTSpin = false;
+    m_isPerfectClear = false;
+    m_isBackToBack = false;
+    m_wasLastSpecialAction = false;
+    m_isTetris = false;
+
+    dasTimer = 0;
+    arrTimer = 0;
+    keyLeftPressed = false;
+    keyRightPressed = false;
+    dasActive = false;
+
+    m_level = 1;
+    m_linesCleared = 0;
+    m_score = 0;
+    m_combo = 0;
+    m_TSpinlinesCleared = 0;
+}
+
 void PlayScene::OnKeyDown(int key)
 {
     switch (key)
@@ -282,10 +351,22 @@ void PlayScene::OnKeyDown(int key)
         OnRotate(true, false);
         break;
     case VK_LEFT:
-        OnMove(-1, 0);
+        if (!keyLeftPressed)
+        {
+            OnMove(-1, 0);
+            keyLeftPressed = true;
+            dasTimer = 0;
+            dasActive = false;
+        }
         break;
     case VK_RIGHT:
-        OnMove(1, 0);
+        if(!keyRightPressed)
+        {
+            OnMove(1, 0);
+            keyRightPressed = true;
+            dasTimer = 0;
+            dasActive = false;
+        }
         break;
     case VK_DOWN:
         OnMove(0, 1);
@@ -317,6 +398,23 @@ void PlayScene::OnKeyDown(int key)
         break;
     case 'A':
         OnRotate(true, true);
+        break;
+    }
+}
+
+void PlayScene::OnKeyUp(int key)
+{
+    switch (key)
+    {
+    case VK_LEFT:
+        keyLeftPressed = false;
+        dasTimer = 0;
+        dasActive = false;
+        break;
+    case VK_RIGHT:
+        keyRightPressed = false;
+        dasTimer = 0;
+        dasActive = false;
         break;
     }
 }
@@ -466,6 +564,8 @@ void PlayScene::Finalize()
 
 void PlayScene::Enter()
 {
+    Init();
+
     m_pGameBoard = new GameBoard(0, 0, 32);
 
     // SpriteSheet 가져오기

@@ -42,7 +42,7 @@ void GameBoard::InitializeBoard()
 	}
 
 	for (int x = 0; x <= maxXIndex; x++) {
-		grid[maxYIndex][x].Set(Tetromino::TYPE_GRID);
+		grid[22][x].Set(Tetromino::TYPE_GRID);
 	}
 	int screenWidth = 0;
 	int screenHeight = 0;
@@ -523,32 +523,45 @@ bool GameBoard::CheckFullLine(int y) const
 	return true;
 }
 
-void GameBoard::ClearLine(int y)
-{
-	for (int x = 1; x < maxXIndex; x++)
-	{
-		grid[y][x].Clear();
-	}
-
-	for (int i = y; i > 1; i--)
-	{
-		for (int x = 1; x < maxXIndex; x++)
-		{
-			grid[i][x] = grid[i - 1][x];
-		}
-	}
-}
-
 int GameBoard::RemoveFullLines()
 {
+	bool isFullLine[22] = { false };
 	int clearedLines = 0;
-	for (int y = 2; y < maxYIndex; y++)
+
+	for (int y = maxYIndex - 1; y >= 2; y--)
 	{
 		if (CheckFullLine(y))
 		{
+			isFullLine[y] = true;
 			clearedLines++;
-			ClearLine(y);
 		}
+	}
+
+	if (clearedLines == 0)
+	{
+		return clearedLines;
+	}
+
+
+	int targetY = maxYIndex - 1;
+
+	for (int sourceY = maxYIndex - 1; sourceY >= 2; sourceY--)
+	{
+		if (isFullLine[sourceY])
+		{
+			continue;
+		}
+
+		if (sourceY != targetY)
+		{
+			for (int x = 1; x < maxXIndex; x++)
+			{
+				grid[targetY][x] = grid[sourceY][x];
+				grid[sourceY][x].Clear();
+			}
+		}
+
+		targetY--;
 	}
 
 	return clearedLines;

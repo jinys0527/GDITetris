@@ -39,7 +39,10 @@ class PlayScene :public Scene
     void AddScore(int clearedLine, bool isTSpin, int combo);
     int GetScore() const;
 
+    void Init();
+
     void OnKeyDown(int key) override;
+    void OnKeyUp(int key) override; 
 
     void OnMove(int dx, int dy);
     void OnRotate(bool clockwise, bool is180);
@@ -65,6 +68,14 @@ private:
     bool m_isBackToBack = false;
     bool m_wasLastSpecialAction = false;
     bool m_isTetris = false;
+
+    const int DAS_DELAY = 170;
+    const int ARR_SPEED = 75;
+    int dasTimer = 0;
+    int arrTimer = 0;
+    bool keyLeftPressed = false;
+    bool keyRightPressed = false;
+    bool dasActive = false;
 
     int m_level = 1;
     int m_linesCleared = 0;

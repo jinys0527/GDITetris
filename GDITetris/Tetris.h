@@ -50,6 +50,8 @@ private:
     using SpriteSheet = renderHelp::SpriteSheet;
     BitmapInfo* m_pBackgroundBitmapInfo = nullptr;
     BitmapInfo* m_pUIBitmapInfo = nullptr;
+    BitmapInfo* m_pKeyBitmapInfo = nullptr;
+    BitmapInfo* m_pButtonBitmapInfo = nullptr;
     SpriteSheet* m_pBricksSpriteSheet = nullptr;
 
 #pragma endregion
@@ -59,6 +61,8 @@ private:
 public:
     BitmapInfo* GetBackgroundBitmapInfo() const;
     BitmapInfo* GetUIBitmapInfo() const;
+    BitmapInfo* GetKeyBitmapInfo() const;
+    BitmapInfo* GetButtonBitmapInfo() const;
     SpriteSheet* GetBricksSpriteSheet() const { return m_pBricksSpriteSheet; }
     void ChangeScene(SceneType eSceneType);
 };

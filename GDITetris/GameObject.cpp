@@ -207,6 +207,30 @@ void Background::SetBitmapInfo(BitmapInfo* bitmapInfo)
     m_pBitmapInfo = bitmapInfo;
 }
 
+void Background::DrawBitmap(HDC hdc, int destX, int destY, int destWidth, int destHeight)
+{
+    if (m_pBitmapInfo == nullptr) return;
+    if (m_pBitmapInfo->GetBitmapHandle() == nullptr) return;
+    HDC hBitmapDC = CreateCompatibleDC(hdc);
+
+    HBITMAP hOldBitmap = (HBITMAP)SelectObject(hBitmapDC, m_pBitmapInfo->GetBitmapHandle());
+    // BLENDFUNCTION 설정 (알파 채널 처리)
+    BLENDFUNCTION blend = { 0 };
+    blend.BlendOp = AC_SRC_OVER;
+    blend.SourceConstantAlpha = 255;  // 원본 알파 채널 그대로 사용
+    blend.AlphaFormat = AC_SRC_ALPHA;
+
+    int screenWidth = 0;
+    int screenHeight = 0;
+    learning::GetScreenSize(screenWidth, screenHeight);
+
+    AlphaBlend(hdc, destX, destY, destWidth, destHeight,
+        hBitmapDC, 0, 0, m_width, m_height, blend);
+    // 비트맵 핸들 복원
+    SelectObject(hBitmapDC, hOldBitmap);
+    DeleteDC(hBitmapDC);
+}
+
 void Background::DrawBitmap(HDC hdc)
 {
     if (m_pBitmapInfo == nullptr) return;

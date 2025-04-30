@@ -44,6 +44,8 @@ bool Tetris::Initialize()
 #pragma region resource
     m_pBackgroundBitmapInfo = renderHelp::CreateBitmapInfo(L"../Resource/title.png");
     m_pUIBitmapInfo = renderHelp::CreateBitmapInfo(L"../Resource/ui.png");
+    m_pKeyBitmapInfo = renderHelp::CreateBitmapInfo(L"../Resource/keyboard.png");
+    m_pButtonBitmapInfo = renderHelp::CreateBitmapInfo(L"../Resource/button.png");
 
     m_pBricksSpriteSheet = new SpriteSheet();
     if (!m_pBricksSpriteSheet->LoadFromJson(L"../Resource/bricks.json") ||
@@ -53,7 +55,8 @@ bool Tetris::Initialize()
         return false;
     }
 
-    if (m_pBackgroundBitmapInfo == nullptr || m_pUIBitmapInfo == nullptr)
+    if (m_pBackgroundBitmapInfo == nullptr || m_pUIBitmapInfo == nullptr
+        || m_pKeyBitmapInfo == nullptr || m_pButtonBitmapInfo == nullptr)
     { 
         std::cout << "Bitmap Load Failed!" << std::endl;
         return false;
@@ -86,6 +89,14 @@ void Tetris::Run()
             if (msg.message == WM_KEYDOWN)
             {
                 m_pScenes[m_eCurrentScene]->OnKeyDown(msg.wParam);
+            }
+            else if (msg.message == WM_KEYUP)
+            {
+                m_pScenes[m_eCurrentScene]->OnKeyUp(msg.wParam);
+            }
+            else if (msg.message == WM_LBUTTONDOWN)
+            {
+                m_pScenes[m_eCurrentScene]->OnClicked(LOWORD(msg.lParam), HIWORD(msg.lParam));
             }
             else
             {
@@ -144,6 +155,16 @@ BitmapInfo* Tetris::GetBackgroundBitmapInfo() const
 BitmapInfo* Tetris::GetUIBitmapInfo() const
 {
     return m_pUIBitmapInfo;
+}
+
+BitmapInfo* Tetris::GetKeyBitmapInfo() const
+{
+    return m_pKeyBitmapInfo;
+}
+
+BitmapInfo* Tetris::GetButtonBitmapInfo() const
+{
+    return m_pButtonBitmapInfo;
 }
 
 void Tetris::ChangeScene(SceneType eSceneType)

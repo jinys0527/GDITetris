@@ -26,8 +26,10 @@ public:
     virtual void FixedUpdate() = 0;
     virtual void Update(float deltaTime) = 0;
     virtual void Render(HDC hDC) = 0;
-   
-    virtual void OnKeyDown(int key) = 0;
+
+    virtual void OnKeyDown(int key) {}
+    virtual void OnKeyUp(int key) {}
+    virtual void OnClicked(int x, int y) {}
 
 protected:
     GameObjectBase** m_GameObjectPtrTable = nullptr;

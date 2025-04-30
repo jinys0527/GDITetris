@@ -51,7 +51,6 @@ public:
 	bool CheckPerfectClear();
 
 	bool CheckFullLine(int y) const;
-	void ClearLine(int y);
 	int RemoveFullLines();
 
 	bool IsGameOver();

@@ -30,6 +30,22 @@ void TitleScene::Initialize(NzWndBase* pWnd)
     m_rect.bottom = m_rect.top + 100;
 
     m_pBackground = pNewObject;
+
+    m_pKey = new Background(ObjectType::BACKGROUND);
+    m_pKey->SetPosition(0.0f, 0.0f);
+
+    m_pKey->SetWidth(465);
+    m_pKey->SetHeight(520);
+
+    m_pKey->SetBitmapInfo(m_pGame->GetKeyBitmapInfo());
+
+    m_pButton = new Background(ObjectType::BACKGROUND);
+    m_pButton->SetPosition(0.0f, 0.0f);
+
+    m_pButton->SetWidth(285);
+    m_pButton->SetHeight(225);
+
+    m_pButton->SetBitmapInfo(m_pGame->GetButtonBitmapInfo());
 }
 
 void TitleScene::Update(float deltaTime)
@@ -37,7 +53,7 @@ void TitleScene::Update(float deltaTime)
     static float time = 0.0f;
     time += deltaTime;
 
-    if (isTrigger)
+    if (isClickedStart)
     {
         m_pGame->ChangeScene(SceneType::SCENE_PLAY);
     }
@@ -49,33 +65,36 @@ void TitleScene::Render(HDC hDC)
     assert(m_pGame != nullptr && "Game object is not initialized!");
 
     m_pBackground->Render(hDC, RGB(255, 0, 0));
+    m_pButton->DrawBitmap(hDC, 490, 400, 285, 225);
 
-    SetBkMode(hDC, TRANSPARENT);
-
-    HFONT hFont = CreateFont(
-        48, 0, 0, 0,
-        FW_BOLD,
-        FALSE, FALSE, FALSE,
-        OEM_CHARSET,
-        OUT_RASTER_PRECIS,
-        CLIP_DEFAULT_PRECIS,
-        NONANTIALIASED_QUALITY,
-        FIXED_PITCH | FF_MODERN,
-        L"Terminal"
-    );
-
-    SetTextColor(hDC, RGB(255, 255, 50));
-
-    // 이전 폰트 백업
-    HFONT hOldFont = (HFONT)SelectObject(hDC, hFont);
-    DrawText(hDC, m_szTitle, -1, &m_rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
-    SelectObject(hDC, hOldFont); // 원래 폰트 복원
-    DeleteObject(hFont);         // 새로 만든 폰트 해제
+    if(isClickedMethod)
+    {
+        m_pKey->DrawBitmap(hDC, 335, 230, 600, 600);
+    }
 }
 
-void TitleScene::OnKeyDown(int key)
+void TitleScene::OnClicked(int x, int y)
 {
-     isTrigger = true;
+    if (x >= 490 && x <= 775)
+    {
+        if(y>=400 && y<=500) 
+        {
+            isClickedStart = true;
+        }
+
+        if (y >= 525 && 625)
+        {
+            isClickedMethod = true;
+        }
+    }
+
+    if (x >= 875 && x <= 930)
+    {
+        if (y >= 225 && y <= 280)
+        {
+            isClickedMethod = false;
+        }
+    }
 }
 
 void TitleScene::Finalize()
@@ -85,11 +104,24 @@ void TitleScene::Finalize()
         delete m_pBackground;
         m_pBackground = nullptr;
     }
+
+    if (m_pKey)
+    {
+        delete m_pKey;
+        m_pKey = nullptr;
+    }
+
+    if (m_pButton)
+    {
+        delete m_pButton;
+        m_pButton = nullptr;
+    }
 }
 
 void TitleScene::Enter()
 {
-    isTrigger = false;
+    isClickedMethod = false;
+    isClickedStart = false;
 }
 
 void TitleScene::Leave()

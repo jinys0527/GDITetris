@@ -3,6 +3,7 @@
 #include "Scene.h"
 
 class GameObjectBase;
+class Background;
 class Tetris;
 
 class TitleScene : public Scene
@@ -21,11 +22,12 @@ public:
     void Update(float deltaTime) override;
     void Render(HDC hDC) override;
 
-    void OnKeyDown(int key) override;
+    void OnClicked(int x, int y) override;
 private:
 
     GameObjectBase* m_pBackground = nullptr;
-    //GameObjectBase* m_pStartButton = nullptr;
+    Background* m_pKey = nullptr;
+    Background* m_pButton = nullptr;
 
     Tetris* m_pGame = nullptr;
 
@@ -33,6 +35,7 @@ private:
 
     RECT m_rect = { 0, 0, 0, 0 };
 
-    bool isTrigger = false;
+    bool isClickedStart = false;
+    bool isClickedMethod = false;
 };
 
