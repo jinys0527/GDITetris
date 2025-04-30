@@ -77,7 +77,7 @@ void SoundManager::Release()
 	}
 }
 
-bool SoundManager::LoadSound(eSoundType type, LPCWSTR filename, bool loop)
+bool SoundManager::LoadSound(eSoundType type, const char* filename, bool loop)
 {
 	if (!m_system || type >= SOUND_COUNT)
 	{
@@ -92,7 +92,7 @@ bool SoundManager::LoadSound(eSoundType type, LPCWSTR filename, bool loop)
 
 	FMOD_MODE mode = loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF;
 
-	FMOD_RESULT result = m_system->createSound(reinterpret_cast<const char*>(filename), mode, nullptr, &m_sounds[type]);
+	FMOD_RESULT result = m_system->createSound(filename, mode, nullptr, &m_sounds[type]);
 
 	if (result != FMOD_OK)
 	{

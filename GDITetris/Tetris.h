@@ -2,12 +2,12 @@
 #include "NzWndBase.h"
 #include "Utillity.h"
 #include "Scene.h"
+#include "SoundManager.h"
 
 // [CHECK] #1  전방 선언을 사용하여 헤더파일의 의존성을 줄임.
 class GameTimer;
 class GameObjectBase;
 class GameObject;
-class SoundManager;
 
 namespace renderHelp
 {
@@ -60,7 +60,7 @@ private:
     int m_eCurrentScene = SCENE_TITLE;
     Scene* m_pScenes[SceneType::SCENE_MAX] = { nullptr, nullptr, nullptr };
 
-    SoundManager* m_soundManager;
+    SoundManager m_soundManager;
 
 public:
     BitmapInfo* GetBackgroundBitmapInfo() const;
@@ -71,5 +71,5 @@ public:
     SpriteSheet* GetBricksSpriteSheet() const { return m_pBricksSpriteSheet; }
     void ChangeScene(SceneType eSceneType);
 
-    SoundManager* GetSoundManager() { return m_soundManager; }
+    SoundManager* GetSoundManager() { return &m_soundManager; }
 };

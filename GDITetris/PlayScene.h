@@ -45,10 +45,10 @@ class PlayScene :public Scene
     void OnKeyDown(int key) override;
     void OnKeyUp(int key) override; 
 
-    void OnMove(int dx, int dy);
-    void OnRotate(bool clockwise, bool is180);
+    bool OnMove(int dx, int dy);
+    bool OnRotate(bool clockwise, bool is180);
 
-    void Hold();
+    bool Hold();
     void RandomGenerateTetromino();
 
     enum LastAction
@@ -93,7 +93,7 @@ private:
     int m_TSpinlinesCleared = 0;
 
     int gameoverTimer = 0;
-    const int GAMEOVER_DELAY = 200;
+    const int GAMEOVER_DELAY = 2000;
     bool isGameover = false;
 
     SoundManager* m_pSoundManager;

@@ -78,31 +78,31 @@ bool Tetris::Initialize()
     m_pScenes[SceneType::SCENE_ENDING] = new EndingScene();
     m_pScenes[SceneType::SCENE_ENDING]->Initialize(this);
 
-    if (!m_soundManager->Init())
+    if (!m_soundManager.Init())
     {
         return false;
     }
 
-    m_soundManager->LoadSound(m_soundManager->SOUND_MOVE, L"../Sound/sfx_move", false);
-    m_soundManager->LoadSound(m_soundManager->SOUND_ROTATE, L"../Sound/sfx_rotate", false);
-    m_soundManager->LoadSound(m_soundManager->SOUND_HARDDROP, L"../Sound/sfx_harddrop", false);
-    m_soundManager->LoadSound(m_soundManager->SOUND_HOLD, L"../Sound/sfx_hold", false);
-    m_soundManager->LoadSound(m_soundManager->SOUND_SINGLE, L"../Sound/sfx_single", false);
-    m_soundManager->LoadSound(m_soundManager->SOUND_DOUBLE, L"../Sound/sfx_double", false);
-    m_soundManager->LoadSound(m_soundManager->SOUND_TRIPLE, L"../Sound/sfx_triple", false);
-    m_soundManager->LoadSound(m_soundManager->SOUND_TETRIS, L"../Sound/sfx_tetris", false);
-    m_soundManager->LoadSound(m_soundManager->SOUND_TSPIN, L"../Sound/sfx_tspin", false);
-    m_soundManager->LoadSound(m_soundManager->SOUND_PERFECTCLEAR, L"../Sound/sfx_perfectclear", false);
-    m_soundManager->LoadSound(m_soundManager->SOUND_COMBO1, L"../Sound/sfx_combo1", false);
-    m_soundManager->LoadSound(m_soundManager->SOUND_COMBO2, L"../Sound/sfx_combo2", false);
-    m_soundManager->LoadSound(m_soundManager->SOUND_COMBO3, L"../Sound/sfx_combo3", false);
-    m_soundManager->LoadSound(m_soundManager->SOUND_COMBO4, L"../Sound/sfx_combo4", false);
-    m_soundManager->LoadSound(m_soundManager->SOUND_COMBO5, L"../Sound/sfx_combo5", false);
-    m_soundManager->LoadSound(m_soundManager->SOUND_COMBO6, L"../Sound/sfx_combo6", false);
-    m_soundManager->LoadSound(m_soundManager->SOUND_COMBO7, L"../Sound/sfx_combo7", false);
-    m_soundManager->LoadSound(m_soundManager->SOUND_BACKTOBACK, L"../Sound/sfx_b2b", false);
-    m_soundManager->LoadSound(m_soundManager->SOUND_GAMEOVER, L"../Sound/sfx_gameover", false);
-    m_soundManager->LoadSound(m_soundManager->SOUND_BGM, L"../Sound/bgm", true);
+    m_soundManager.LoadSound(SoundManager::SOUND_MOVE, "../Sound/sfx_move.wav", false);
+    m_soundManager.LoadSound(SoundManager::SOUND_ROTATE, "../Sound/sfx_rotate.wav", false);
+    m_soundManager.LoadSound(SoundManager::SOUND_HARDDROP, "../Sound/sfx_harddrop.wav", false);
+    m_soundManager.LoadSound(SoundManager::SOUND_HOLD, "../Sound/sfx_hold.wav", false);
+    m_soundManager.LoadSound(SoundManager::SOUND_SINGLE, "../Sound/sfx_single.wav", false);
+    m_soundManager.LoadSound(SoundManager::SOUND_DOUBLE, "../Sound/sfx_double.wav", false);
+    m_soundManager.LoadSound(SoundManager::SOUND_TRIPLE, "../Sound/sfx_triple.wav", false);
+    m_soundManager.LoadSound(SoundManager::SOUND_TETRIS, "../Sound/sfx_tetris.wav", false);
+    m_soundManager.LoadSound(SoundManager::SOUND_TSPIN, "../Sound/sfx_tspin.wav", false);
+    m_soundManager.LoadSound(SoundManager::SOUND_PERFECTCLEAR, "../Sound/sfx_perfectclear.wav", false);
+    m_soundManager.LoadSound(SoundManager::SOUND_COMBO1, "../Sound/sfx_combo1.wav", false);
+    m_soundManager.LoadSound(SoundManager::SOUND_COMBO2, "../Sound/sfx_combo2.wav", false);
+    m_soundManager.LoadSound(SoundManager::SOUND_COMBO3, "../Sound/sfx_combo3.wav", false);
+    m_soundManager.LoadSound(SoundManager::SOUND_COMBO4, "../Sound/sfx_combo4.wav", false);
+    m_soundManager.LoadSound(SoundManager::SOUND_COMBO5, "../Sound/sfx_combo5.wav", false);
+    m_soundManager.LoadSound(SoundManager::SOUND_COMBO6, "../Sound/sfx_combo6.wav", false);
+    m_soundManager.LoadSound(SoundManager::SOUND_COMBO7, "../Sound/sfx_combo7.wav", false);
+    m_soundManager.LoadSound(SoundManager::SOUND_BACKTOBACK, "../Sound/sfx_b2b.wav", false);
+    m_soundManager.LoadSound(SoundManager::SOUND_GAMEOVER, "../Sound/sfx_gameover.wav", false);
+    m_soundManager.LoadSound(SoundManager::SOUND_BGM, "../Sound/bgm.wav", true);
 
     return true;
 }
@@ -135,7 +135,7 @@ void Tetris::Run()
         else
         {
             Update();
-            m_soundManager->Update();
+            m_soundManager.Update();
             Render();
         }
     }

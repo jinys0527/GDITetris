@@ -1,7 +1,6 @@
 #pragma once
 #include <fmod.hpp>
 #include <fmod_errors.h>
-#include "Windows.h"
 
 class SoundManager
 {
@@ -38,7 +37,7 @@ public:
 	void Update();
 	void Release();
 
-	bool LoadSound(eSoundType type, LPCWSTR filename, bool loop);
+	bool LoadSound(eSoundType type, const char* filename, bool loop);
 
 	void PlayBGM(float volume);
 	void PlaySFX(eSoundType type, float volume);
