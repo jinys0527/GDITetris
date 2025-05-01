@@ -43,11 +43,11 @@ public:
 
 	void SetSize(int index, int width, int height);
 protected:
-	int blocks[4][4][4];
-	int width[4] = { 0, };
-	int height[4] = { 0, };
-	eBrickType type;
-	int rotation;
-	int x, y;
+	int m_blocks[4][4][4];
+	int m_width[4] = { 0, };
+	int m_height[4] = { 0, };
+	eBrickType m_type;
+	int m_rotation;
+	int m_x, m_y;
 };
 

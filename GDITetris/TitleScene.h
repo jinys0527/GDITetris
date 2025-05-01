@@ -38,7 +38,7 @@ private:
 
     SoundManager* m_pSoundManager;
 
-    bool isClickedStart = false;
-    bool isClickedMethod = false;
+    bool m_isClickedStart = false;
+    bool m_isClickedMethod = false;
 };
 

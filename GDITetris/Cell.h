@@ -11,10 +11,10 @@ namespace renderHelp
 class Cell
 {
 public:
-	bool occupied;
-	Tetromino::eBrickType blockType;
+	bool m_occupied;
+	Tetromino::eBrickType m_blockType;
 
-	Cell() : occupied(false), blockType(Tetromino::TYPE_GRID) {}
+	Cell() : m_occupied(false), m_blockType(Tetromino::TYPE_GRID) {}
 
 	void Clear();
 
@@ -59,11 +59,11 @@ public:
 	int GetMaxYIndex() const;
 
 private:
-	Cell grid[23][12];
-	int boardX;
-	int boardY;
-	int cellSize;
+	Cell m_grid[23][12];
+	int m_boardX;
+	int m_boardY;
+	int m_cellSize;
 
-	int maxXIndex = 11;
-	int maxYIndex = 22;
+	int m_maxXIndex = 11;
+	int m_maxYIndex = 22;
 };
