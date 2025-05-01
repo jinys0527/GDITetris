@@ -157,6 +157,11 @@ void SoundManager::SetSFXVolume(float volume)
 	}
 }
 
+FMOD::Channel* SoundManager::GetPrevChannel() const
+{
+	return m_sfxChannels[m_nextChannel-1];
+}
+
 void SoundManager::StopBGM()
 {
 	if (m_bgm)

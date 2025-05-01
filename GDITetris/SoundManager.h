@@ -45,6 +45,8 @@ public:
 
 	void SetSFXVolume(float volume);
 
+	FMOD::Channel* GetPrevChannel() const;
+
 	void StopBGM();
 	void StopAllSFX();
 private:

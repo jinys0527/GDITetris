@@ -185,6 +185,11 @@ bool Tetromino::Rotate180(const GameBoard& board)
 
 bool Tetromino::TryWallKick(const GameBoard& board, int oldRotation, int newRotation)
 {
+    if (type == TYPE_O)
+    {
+        return false;
+    }
+
     const Offset* wallKickTable = (type == TYPE_I) ? WallKickDataI : WallKickDataNormal;
 
     for (int i = 0; i < 5; i++)

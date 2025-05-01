@@ -127,7 +127,6 @@ void PlayScene::Update(float deltaTime)
 	}
 	if (m_pGameBoard->IsGameOver())
 	{
-		gameoverTimer += deltaTime;
 		if (!isGameover)
 		{
 			isGameover = true;
@@ -139,9 +138,14 @@ void PlayScene::Update(float deltaTime)
 			}
 		}
 
-		if (gameoverTimer >= GAMEOVER_DELAY)
+		if (m_pSoundManager)
 		{
-			m_pGame->ChangeScene(SCENE_TITLE);
+			bool isPlaying;
+			m_pSoundManager->GetPrevChannel()->isPlaying(&isPlaying);
+			if (!isPlaying)
+			{
+				m_pGame->ChangeScene(SCENE_TITLE);
+			}
 		}
 	}
 }
@@ -533,7 +537,6 @@ void PlayScene::Init()
 
 	isGameover = false;
 	m_bgmStarted = false;
-	gameoverTimer = 0;
 
 	m_lastAction = ACTION_NONE;
 }

@@ -94,8 +94,6 @@ private:
     int m_combo = 0;
     int m_TSpinlinesCleared = 0;
 
-    int gameoverTimer = 0;
-    const int GAMEOVER_DELAY = 2000;
     bool isGameover = false;
 
     SoundManager* m_pSoundManager;
