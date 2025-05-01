@@ -797,7 +797,8 @@ void PlayScene::ShuffleBag()
 {
 	for (int i = 6; i > 0; i--)
 	{
-		int j = rand() % (i + 1);
+		std::uniform_int_distribution<int> dist(0, i);
+		int j = dist(mt);
 
 		int temp = m_bag.blocks[i];
 		m_bag.blocks[i] = m_bag.blocks[j];

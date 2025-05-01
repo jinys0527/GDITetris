@@ -33,13 +33,13 @@ public:
 	bool RotateWithCheckCollision(const GameBoard& board, bool clockwise);
 	bool CheckCollision(const GameBoard& board);
 
-	void SetPosition(int x, int y) { this->x = x; this->y = y; }
+	void SetPosition(int x, int y) { this->m_x = x; this->m_y = y; }
 
 	int GetBlock(int rotation, int y, int x) const;
-	int GetRotation() { return rotation; }
-	int GetX() { return x; }
-	int GetY() { return y; }
-	eBrickType GetType() { return type; }
+	int GetRotation() { return m_rotation; }
+	int GetX() { return m_x; }
+	int GetY() { return m_y; }
+	eBrickType GetType() { return m_type; }
 
 	void SetSize(int index, int width, int height);
 protected:

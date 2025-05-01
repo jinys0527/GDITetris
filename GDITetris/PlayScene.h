@@ -25,7 +25,7 @@ class PlayScene :public Scene
 {
     using SpriteSheet = renderHelp::SpriteSheet;
  public:
-     PlayScene() : mt(std::random_device{}()), m_dist(0, Tetromino::TYPE_GRID - 1), m_pSoundManager(nullptr), m_bgmStarted(false) {}
+     PlayScene() : mt(std::random_device{}()), m_pSoundManager(nullptr), m_bgmStarted(false) {}
     ~PlayScene() override = default;
 
     void Initialize(NzWndBase* pWnd) override;
@@ -114,6 +114,5 @@ private:
     LastAction m_lastAction = ACTION_NONE;
 
     std::mt19937 mt;
-    std::uniform_int_distribution<int> m_dist;
 };
 
