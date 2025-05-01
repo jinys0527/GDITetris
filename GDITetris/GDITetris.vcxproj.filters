@@ -126,6 +126,15 @@
     <Image Include="..\Resource\ui.png">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="..\Resource\button.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\Resource\gameover.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\Resource\keyboard.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Text Include="todo.txt" />

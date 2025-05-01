@@ -179,6 +179,9 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\Resource\bricks.png" />
+    <Image Include="..\Resource\button.png" />
+    <Image Include="..\Resource\gameover.png" />
+    <Image Include="..\Resource\keyboard.png" />
     <Image Include="..\Resource\title.png" />
     <Image Include="..\Resource\ui.png" />
   </ItemGroup>
