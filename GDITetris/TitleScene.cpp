@@ -32,8 +32,8 @@ void TitleScene::Initialize(NzWndBase* pWnd)
 	m_pKey = new Background(ObjectType::BACKGROUND);
 	m_pKey->SetPosition(0.0f, 0.0f);
 
-	m_pKey->SetWidth(465);
-	m_pKey->SetHeight(520);
+	m_pKey->SetWidth(610);
+	m_pKey->SetHeight(622);
 
 	m_pKey->SetBitmapInfo(m_pGame->GetKeyBitmapInfo());
 
@@ -66,10 +66,10 @@ void TitleScene::Render(HDC hDC)
 
 	m_pBackground->DrawBitmap(hDC, 0, 0, 1280, 960);
 	m_pButton->DrawBitmap(hDC, 490, 420, 297, 237);
-
+	
 	if (isClickedMethod)
 	{
-		m_pKey->DrawBitmap(hDC, 335, 230, 600, 600);
+		m_pKey->DrawBitmap(hDC, 335, 230, 610, 622);
 	}
 }
 
@@ -93,9 +93,9 @@ void TitleScene::OnClicked(int x, int y)
 		}
 	}
 
-	if (x >= 875 && x <= 930)
+	if (x >= 883 && x <= 938)
 	{
-		if (y >= 225 && y <= 280)
+		if (y >= 230 && y <= 285)
 		{
 			isClickedMethod = false;
 		}
