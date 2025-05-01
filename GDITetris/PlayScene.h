@@ -15,6 +15,12 @@ namespace renderHelp
     class SpriteSheet;
 }
 
+struct SevenBag
+{
+    int blocks[7];
+    int currentIndex;
+};
+
 class PlayScene :public Scene
 {
     using SpriteSheet = renderHelp::SpriteSheet;
@@ -60,6 +66,10 @@ class PlayScene :public Scene
         ACTION_DROP
     };
 private:
+    void InitBag();
+    void ShuffleBag();
+    int GetNextBlockType();
+
     Tetris* m_pGame = nullptr;
 
     GameBoard* m_pGameBoard = nullptr;
@@ -71,6 +81,8 @@ private:
 
     GameObjectBase* m_pBackground = nullptr;
     Background* m_pGameover = nullptr;
+
+    SevenBag m_bag;
 
     bool m_canHold = true;
     bool m_wasLastMoveRotation = false;

@@ -752,41 +752,68 @@ bool PlayScene::Hold()
 
 void PlayScene::RandomGenerateTetromino()
 {
-	static bool isSet = false;
+	static bool isInitialized = false;
 	m_canHold = true;
 
-	if (isSet)
+	if (!isInitialized)
 	{
-		if (m_pNextTetromino[0] == nullptr)
-		{
-			for (int i = 0; i < 3; i++)
-			{
-				m_pNextTetromino[i] = m_pNextTetromino[i + 1];
-			}
-		}
+		InitBag();
+		isInitialized = true;
 
-		Tetromino::eBrickType randomType = static_cast<Tetromino::eBrickType>(m_dist(mt));
-		m_pNextTetromino[3] = new Tetromino(randomType);
+		for (int i = 0; i < 4; i++)
+		{
+			int blockType = GetNextBlockType();
+			m_pNextTetromino[i] = new Tetromino(static_cast<Tetromino::eBrickType>(blockType));
+		}
 	}
 	else
 	{
-		isSet = true;
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < 3; i++)
 		{
-			Tetromino::eBrickType randomType = static_cast<Tetromino::eBrickType>(m_dist(mt));
-			m_pNextTetromino[i] = new Tetromino(randomType);
+			m_pNextTetromino[i] = m_pNextTetromino[i + 1];
 		}
+
+		int blockType = GetNextBlockType();
+		m_pNextTetromino[3] = new Tetromino(static_cast<Tetromino::eBrickType>(blockType));
 	}
 
-	if(m_pNextTetromino[0] != nullptr)
+	m_pTetromino = m_pNextTetromino[0];
+	m_pNextTetromino[0] = nullptr;
+}
+
+void PlayScene::InitBag()
+{
+	for (int i = 0; i < 7; i++)
 	{
-		m_pTetromino = m_pNextTetromino[0];
-		m_pNextTetromino[0] = nullptr;
+		m_bag.blocks[i] = i;
 	}
-	else {
-		Tetromino::eBrickType randomType = static_cast<Tetromino::eBrickType>(m_dist(mt));
-		m_pTetromino = new Tetromino(randomType);
+
+	ShuffleBag();
+
+	m_bag.currentIndex = 0;
+}
+
+void PlayScene::ShuffleBag()
+{
+	for (int i = 6; i > 0; i--)
+	{
+		int j = rand() % (i + 1);
+
+		int temp = m_bag.blocks[i];
+		m_bag.blocks[i] = m_bag.blocks[j];
+		m_bag.blocks[j] = temp;
 	}
+}
+
+int PlayScene::GetNextBlockType()
+{
+	if (m_bag.currentIndex >= 7)
+	{
+		ShuffleBag();
+		m_bag.currentIndex = 0;
+	}
+
+	return m_bag.blocks[m_bag.currentIndex++];
 }
 
 void PlayScene::Finalize()
