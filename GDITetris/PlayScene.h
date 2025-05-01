@@ -94,11 +94,11 @@ private:
 
     const int DAS_DELAY = 170;
     const int ARR_SPEED = 75;
-    int dasTimer = 0;
-    int arrTimer = 0;
-    bool keyLeftPressed = false;
-    bool keyRightPressed = false;
-    bool dasActive = false;
+    int m_dasTimer = 0;
+    int m_arrTimer = 0;
+    bool m_keyLeftPressed = false;
+    bool m_keyRightPressed = false;
+    bool m_dasActive = false;
 
     int m_level = 1;
     int m_linesCleared = 0;
@@ -106,7 +106,7 @@ private:
     int m_combo = 0;
     int m_TSpinlinesCleared = 0;
 
-    bool isGameover = false;
+    bool m_isGameover = false;
 
     SoundManager* m_pSoundManager;
     bool m_bgmStarted;

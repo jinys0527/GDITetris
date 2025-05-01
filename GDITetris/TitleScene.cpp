@@ -53,7 +53,7 @@ void TitleScene::Update(float deltaTime)
 	static float time = 0.0f;
 	time += deltaTime;
 
-	if (isClickedStart)
+	if (m_isClickedStart)
 	{
 		m_pGame->ChangeScene(SceneType::SCENE_PLAY);
 	}
@@ -67,7 +67,7 @@ void TitleScene::Render(HDC hDC)
 	m_pBackground->DrawBitmap(hDC, 0, 0, 1280, 960);
 	m_pButton->DrawBitmap(hDC, 490, 420, 297, 237);
 	
-	if (isClickedMethod)
+	if (m_isClickedMethod)
 	{
 		m_pKey->DrawBitmap(hDC, 335, 230, 610, 622);
 	}
@@ -84,12 +84,12 @@ void TitleScene::OnClicked(int x, int y)
 	{
 		if (y >= 420 && y <= 530)
 		{
-			isClickedStart = true;
+			m_isClickedStart = true;
 		}
 
 		if (y >= 540 && 650)
 		{
-			isClickedMethod = true;
+			m_isClickedMethod = true;
 		}
 	}
 
@@ -97,7 +97,7 @@ void TitleScene::OnClicked(int x, int y)
 	{
 		if (y >= 230 && y <= 285)
 		{
-			isClickedMethod = false;
+			m_isClickedMethod = false;
 		}
 	}
 }
@@ -125,8 +125,8 @@ void TitleScene::Finalize()
 
 void TitleScene::Enter()
 {
-	isClickedMethod = false;
-	isClickedStart = false;
+	m_isClickedMethod = false;
+	m_isClickedStart = false;
 }
 
 void TitleScene::Leave()

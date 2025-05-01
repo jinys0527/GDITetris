@@ -35,26 +35,26 @@ void PlayScene::Update(float deltaTime)
 	if (currentDropTime < 100.0f)
 		currentDropTime = 100.0f;
 
-	if(!isGameover)
+	if(!m_isGameover)
 	{
 		if (m_pTetromino) {
 			time += deltaTime;
 
-			if (keyLeftPressed)
+			if (m_keyLeftPressed)
 			{
-				if (!dasActive)
+				if (!m_dasActive)
 				{
-					dasTimer += deltaTime;
-					if (dasTimer >= DAS_DELAY)
+					m_dasTimer += deltaTime;
+					if (m_dasTimer >= DAS_DELAY)
 					{
-						dasActive = true;
-						arrTimer = 0;
+						m_dasActive = true;
+						m_arrTimer = 0;
 					}
 				}
 				else
 				{
-					arrTimer += deltaTime;
-					if (arrTimer >= ARR_SPEED)
+					m_arrTimer += deltaTime;
+					if (m_arrTimer >= ARR_SPEED)
 					{
 						OnMove(-1, 0);
 						if (m_pSoundManager)
@@ -62,26 +62,26 @@ void PlayScene::Update(float deltaTime)
 							m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_MOVE, 0.25f);
 						}
 						m_lastAction = ACTION_MOVE;
-						arrTimer = 0;
+						m_arrTimer = 0;
 					}
 				}
 			}
 
-			if (keyRightPressed)
+			if (m_keyRightPressed)
 			{
-				if (!dasActive)
+				if (!m_dasActive)
 				{
-					dasTimer += deltaTime;
-					if (dasTimer >= DAS_DELAY)
+					m_dasTimer += deltaTime;
+					if (m_dasTimer >= DAS_DELAY)
 					{
-						dasActive = true;
-						arrTimer = 0;
+						m_dasActive = true;
+						m_arrTimer = 0;
 					}
 				}
 				else
 				{
-					arrTimer += deltaTime;
-					if (arrTimer >= ARR_SPEED)
+					m_arrTimer += deltaTime;
+					if (m_arrTimer >= ARR_SPEED)
 					{
 						OnMove(1, 0);
 						if (m_pSoundManager)
@@ -89,7 +89,7 @@ void PlayScene::Update(float deltaTime)
 							m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_MOVE, 0.25f);
 						}
 						m_lastAction = ACTION_MOVE;
-						arrTimer = 0;
+						m_arrTimer = 0;
 					}
 				}
 			}
@@ -127,9 +127,9 @@ void PlayScene::Update(float deltaTime)
 	}
 	if (m_pGameBoard->IsGameOver())
 	{
-		if (!isGameover)
+		if (!m_isGameover)
 		{
-			isGameover = true;
+			m_isGameover = true;
 			if (m_pSoundManager)
 			{
 				m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_GAMEOVER, 0.4f);
@@ -292,7 +292,7 @@ void PlayScene::Render(HDC hDC)
 		TextOutW(hDC, x, 900, backtobackText, backtobackLength);
 	}
 
-	if (isGameover)
+	if (m_isGameover)
 	{
 		m_pGameover->DrawBitmap(hDC, 427, 360, 460, 240);
 	}
@@ -523,11 +523,11 @@ void PlayScene::Init()
 	m_wasLastSpecialAction = false;
 	m_isTetris = false;
 
-	dasTimer = 0;
-	arrTimer = 0;
-	keyLeftPressed = false;
-	keyRightPressed = false;
-	dasActive = false;
+	m_dasTimer = 0;
+	m_arrTimer = 0;
+	m_keyLeftPressed = false;
+	m_keyRightPressed = false;
+	m_dasActive = false;
 
 	m_level = 1;
 	m_linesCleared = 0;
@@ -535,7 +535,7 @@ void PlayScene::Init()
 	m_combo = 0;
 	m_TSpinlinesCleared = 0;
 
-	isGameover = false;
+	m_isGameover = false;
 	m_bgmStarted = false;
 
 	m_lastAction = ACTION_NONE;
@@ -543,7 +543,7 @@ void PlayScene::Init()
 
 void PlayScene::OnKeyDown(int key)
 {
-	if(!isGameover)
+	if(!m_isGameover)
 	{
 		switch (key)
 		{
@@ -559,7 +559,7 @@ void PlayScene::OnKeyDown(int key)
 			}
 			break;
 		case VK_LEFT:
-			if (!keyLeftPressed)
+			if (!m_keyLeftPressed)
 			{
 				if (OnMove(-1, 0))
 				{
@@ -567,15 +567,15 @@ void PlayScene::OnKeyDown(int key)
 					{
 						m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_MOVE, 0.25f);
 					}
-					keyLeftPressed = true;
-					dasTimer = 0;
-					dasActive = false;
+					m_keyLeftPressed = true;
+					m_dasTimer = 0;
+					m_dasActive = false;
 					m_lastAction = ACTION_MOVE;
 				}
 			}
 			break;
 		case VK_RIGHT:
-			if (!keyRightPressed)
+			if (!m_keyRightPressed)
 			{
 				if (OnMove(1, 0))
 				{
@@ -583,9 +583,9 @@ void PlayScene::OnKeyDown(int key)
 					{
 						m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_MOVE, 0.25f);
 					}
-					keyRightPressed = true;
-					dasTimer = 0;
-					dasActive = false;
+					m_keyRightPressed = true;
+					m_dasTimer = 0;
+					m_dasActive = false;
 					m_lastAction = ACTION_MOVE;
 				}
 			}
@@ -649,19 +649,19 @@ void PlayScene::OnKeyDown(int key)
 
 void PlayScene::OnKeyUp(int key)
 {
-	if(!isGameover)
+	if(!m_isGameover)
 	{
 		switch (key)
 		{
 		case VK_LEFT:
-			keyLeftPressed = false;
-			dasTimer = 0;
-			dasActive = false;
+			m_keyLeftPressed = false;
+			m_dasTimer = 0;
+			m_dasActive = false;
 			break;
 		case VK_RIGHT:
-			keyRightPressed = false;
-			dasTimer = 0;
-			dasActive = false;
+			m_keyRightPressed = false;
+			m_dasTimer = 0;
+			m_dasActive = false;
 			break;
 		}
 	}
