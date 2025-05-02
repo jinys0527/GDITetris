@@ -502,6 +502,7 @@ void PlayScene::AddScore(int clearedLine, bool isTSpin, int combo)
 		}
 		else
 		{
+			m_wasLastSpecialAction = false;
 			m_isBackToBack = false;
 		}
 		m_combo = 0;
@@ -534,6 +535,8 @@ void PlayScene::Init()
 	m_score = 0;
 	m_combo = 0;
 	m_TSpinlinesCleared = 0;
+
+	isInitialized = false;
 
 	m_isGameover = false;
 	m_bgmStarted = false;
@@ -752,7 +755,6 @@ bool PlayScene::Hold()
 
 void PlayScene::RandomGenerateTetromino()
 {
-	static bool isInitialized = false;
 	m_canHold = true;
 
 	if (!isInitialized)
