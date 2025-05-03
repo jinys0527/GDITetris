@@ -10,7 +10,7 @@ class SoundManager;
 class TitleScene : public Scene
 {
 public:
-    TitleScene() = default;
+    TitleScene() : Scene() {};
     ~TitleScene() override = default;
 
     void Initialize(NzWndBase* pWnd) override;
@@ -35,8 +35,6 @@ private:
     WCHAR m_szTitle[64] = L"Title Scene";
 
     RECT m_rect = { 0, 0, 0, 0 };
-
-    SoundManager* m_pSoundManager;
 
     bool m_isClickedStart = false;
     bool m_isClickedMethod = false;

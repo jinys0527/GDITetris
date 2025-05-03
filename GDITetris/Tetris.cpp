@@ -7,6 +7,7 @@
 #include "RenderHelp.h"
 #include "TitleScene.h"
 #include "PlayScene.h"
+#include "RankingScene.h"
 #include "SoundManager.h"
 
 using namespace learning;
@@ -47,6 +48,8 @@ bool Tetris::Initialize()
     m_pKeyBitmapInfo = renderHelp::CreateBitmapInfo(L"../Resource/keyboard.png");
     m_pButtonBitmapInfo = renderHelp::CreateBitmapInfo(L"../Resource/button.png");
     m_pGameoverBitmapInfo = renderHelp::CreateBitmapInfo(L"../Resource/gameover.png");
+    m_pNameBitmapInfo = renderHelp::CreateBitmapInfo(L"../Resource/name.png");
+    m_pRankingBitmapInfo = renderHelp::CreateBitmapInfo(L"../Resource/ranking.png");
 
     m_pBricksSpriteSheet = new SpriteSheet();
     if (!m_pBricksSpriteSheet->LoadFromJson(L"../Resource/bricks.json") ||
@@ -74,6 +77,8 @@ bool Tetris::Initialize()
     m_pScenes[SceneType::SCENE_TITLE]->Initialize(this);
     m_pScenes[SceneType::SCENE_PLAY] = new PlayScene();
     m_pScenes[SceneType::SCENE_PLAY]->Initialize(this);
+    m_pScenes[SceneType::SCENE_RANKING] = new RankingScene();
+    m_pScenes[SceneType::SCENE_RANKING]->Initialize(this);
 
     if (!m_soundManager.Init())
     {
@@ -197,6 +202,16 @@ BitmapInfo* Tetris::GetButtonBitmapInfo() const
 BitmapInfo* Tetris::GetGameoverBitmapInfo() const
 {
     return m_pGameoverBitmapInfo;
+}
+
+BitmapInfo* Tetris::GetNameBitmapInfo() const
+{
+    return m_pNameBitmapInfo;
+}
+
+BitmapInfo* Tetris::GetRankingBitmapInfo() const
+{
+    return m_pRankingBitmapInfo;
 }
 
 void Tetris::ChangeScene(SceneType eSceneType)

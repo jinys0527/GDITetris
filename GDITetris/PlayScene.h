@@ -3,6 +3,7 @@
 #include "Tetromino.h"
 #include <random>
 #include "SoundManager.h"
+#include "RankingManager.h"
 
 class GameObjectBase;
 class GameObject;
@@ -25,7 +26,7 @@ class PlayScene :public Scene
 {
     using SpriteSheet = renderHelp::SpriteSheet;
  public:
-     PlayScene() : mt(std::random_device{}()), m_pSoundManager(nullptr), m_bgmStarted(false) {}
+     PlayScene() : Scene(), mt(std::random_device{}()), m_bgmStarted(false) {}
     ~PlayScene() override = default;
 
     void Initialize(NzWndBase* pWnd) override;
@@ -50,13 +51,16 @@ class PlayScene :public Scene
     void Init();
 
     void OnKeyDown(int key) override;
-    void OnKeyUp(int key) override; 
+    void OnKeyUp(int key) override;
+    void OnClicked(int x, int y) override;
 
     bool OnMove(int dx, int dy);
     bool OnRotate(bool clockwise, bool is180);
 
     bool Hold();
     void RandomGenerateTetromino();
+
+    void SaveScore(const wchar_t* name);
 
     enum LastAction
     {
@@ -82,7 +86,21 @@ private:
     GameObjectBase* m_pBackground = nullptr;
     Background* m_pGameover = nullptr;
 
-    SevenBag m_bag;
+    Background* m_pEnterName = nullptr;
+
+    RankingManager m_rankingManager;
+    wchar_t m_playerName[4] = { 0 };
+
+    enum eGameState
+    {
+        PLAYING,
+        GAMEOVER,
+        ENTERINGNAME
+    };
+
+    eGameState m_GameState = PLAYING;
+
+    SevenBag m_bag = { { 0, }, 0 };
 
     bool m_canHold = true;
     bool m_wasLastMoveRotation = false;
@@ -110,7 +128,8 @@ private:
 
     bool m_isGameover = false;
 
-    SoundManager* m_pSoundManager;
+    bool m_isEnterClicked = false;
+
     bool m_bgmStarted;
 
     LastAction m_lastAction = ACTION_NONE;

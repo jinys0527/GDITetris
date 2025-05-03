@@ -5,16 +5,18 @@ enum SceneType
 {
     SCENE_TITLE = 0,
     SCENE_PLAY,
+    SCENE_RANKING,
     SCENE_MAX
 };
 
 class GameObjectBase;
 class NzWndBase;
+class SoundManager;
 
 class Scene
 {
 public:
-    Scene() = default;
+    Scene() : m_pSoundManager(nullptr) {};
     virtual ~Scene() = default;
     virtual void Initialize(NzWndBase* pWnd) = 0;
     virtual void Finalize() = 0;
@@ -32,7 +34,7 @@ public:
 
 protected:
     GameObjectBase** m_GameObjectPtrTable = nullptr;
-
+    SoundManager* m_pSoundManager;
 private:
     Scene(const Scene&) = delete;
     Scene& operator=(const Scene&) = delete;

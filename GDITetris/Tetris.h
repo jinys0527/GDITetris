@@ -54,11 +54,13 @@ private:
     BitmapInfo* m_pKeyBitmapInfo = nullptr;
     BitmapInfo* m_pButtonBitmapInfo = nullptr;
     BitmapInfo* m_pGameoverBitmapInfo = nullptr;
+    BitmapInfo* m_pNameBitmapInfo = nullptr;
+    BitmapInfo* m_pRankingBitmapInfo = nullptr;
     SpriteSheet* m_pBricksSpriteSheet = nullptr;
 
 #pragma endregion
     int m_eCurrentScene = SCENE_TITLE;
-    Scene* m_pScenes[SceneType::SCENE_MAX] = { nullptr, nullptr };
+    Scene* m_pScenes[SceneType::SCENE_MAX] = { nullptr, nullptr, nullptr };
 
     SoundManager m_soundManager;
 
@@ -68,6 +70,8 @@ public:
     BitmapInfo* GetKeyBitmapInfo() const;
     BitmapInfo* GetButtonBitmapInfo() const;
     BitmapInfo* GetGameoverBitmapInfo() const;
+    BitmapInfo* GetNameBitmapInfo() const;
+    BitmapInfo* GetRankingBitmapInfo() const;
     SpriteSheet* GetBricksSpriteSheet() const { return m_pBricksSpriteSheet; }
     void ChangeScene(SceneType eSceneType);
 
