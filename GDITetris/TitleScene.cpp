@@ -10,6 +10,7 @@ void TitleScene::Initialize(NzWndBase* pWnd)
 {
 	m_pGame = dynamic_cast<Tetris*>(pWnd);
 	assert(m_pGame != nullptr && "Game object is not initialized!");
+	m_pSoundManager = m_pGame->GetSoundManager();
 
 	m_pBackground = new Background(ObjectType::BACKGROUND);
 	m_pBackground->SetPosition(0.0f, 0.0f);
@@ -46,6 +47,8 @@ void TitleScene::Initialize(NzWndBase* pWnd)
 	m_pButton->SetBitmapInfo(m_pGame->GetButtonBitmapInfo());
 
 	m_pSoundManager = m_pGame->GetSoundManager();
+
+	Enter();
 }
 
 void TitleScene::Update(float deltaTime)
@@ -127,12 +130,18 @@ void TitleScene::Enter()
 {
 	m_isClickedMethod = false;
 	m_isClickedStart = false;
+
+	if (m_pSoundManager)
+	{
+		m_pSoundManager->PlayBGM(m_pSoundManager->SOUND_BGM_TITLE, 0.3f);
+	}
 }
 
 void TitleScene::Leave()
 {
 	if (m_pSoundManager)
 	{
+		m_pSoundManager->StopBGM();
 		m_pSoundManager->StopAllSFX();
 	}
 }

@@ -26,7 +26,9 @@ public:
 		SOUND_COMBO7,
 		SOUND_BACKTOBACK,
 		SOUND_GAMEOVER,
-		SOUND_BGM,
+		SOUND_BGM_TITLE,
+		SOUND_BGM_PLAY,
+		SOUND_BGM_RANKING,
 		SOUND_CLICK,
 		SOUND_COUNT
 	};
@@ -40,7 +42,7 @@ public:
 
 	bool LoadSound(eSoundType type, const char* filename, bool loop);
 
-	void PlayBGM(float volume);
+	void PlayBGM(eSoundType type, float volume);
 	void PlaySFX(eSoundType type, float volume);
 
 	void SetSFXVolume(float volume);

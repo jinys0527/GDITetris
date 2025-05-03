@@ -103,9 +103,9 @@ bool SoundManager::LoadSound(eSoundType type, const char* filename, bool loop)
 	return true;
 }
 
-void SoundManager::PlayBGM(float volume)
+void SoundManager::PlayBGM(eSoundType type, float volume)
 {
-	if (!m_system || !m_sounds[SOUND_BGM])
+	if (!m_system || !m_sounds[type])
 	{
 		return;
 	}
@@ -118,7 +118,7 @@ void SoundManager::PlayBGM(float volume)
 
 	if (!isPlaying)
 	{
-		m_system->playSound(m_sounds[SOUND_BGM], nullptr, false, &m_bgm);
+		m_system->playSound(m_sounds[type], nullptr, false, &m_bgm);
 		if (m_bgm)
 		{
 			m_bgm->setVolume(volume);
@@ -133,7 +133,7 @@ void SoundManager::PlaySFX(eSoundType type, float volume)
 		return;
 	}
 
-	if (type == SOUND_BGM)
+	if (type == SOUND_BGM_TITLE || type == SOUND_BGM_PLAY || type == SOUND_BGM_RANKING)
 	{
 		return;
 	}

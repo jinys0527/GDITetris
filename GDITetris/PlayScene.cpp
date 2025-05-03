@@ -736,6 +736,11 @@ void PlayScene::OnClicked(int x, int y)
 {
 	if (m_GameState == ENTERINGNAME)
 	{
+		if (m_pSoundManager)
+		{
+			m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_CLICK, 0.4f);
+		}
+
 		if (x >= 515 && x <= 765)
 		{
 			if (y >= 535 && y <= 635)
@@ -988,7 +993,7 @@ void PlayScene::Enter()
 
 	if (m_pSoundManager && !m_bgmStarted)
 	{
-		m_pSoundManager->PlayBGM(0.3f);
+		m_pSoundManager->PlayBGM(m_pSoundManager->SOUND_BGM_PLAY, 0.3f);
 		m_bgmStarted = true;
 	}
 }

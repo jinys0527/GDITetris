@@ -7,6 +7,7 @@ void RankingScene::Initialize(NzWndBase* pWnd)
 {
     m_pGame = dynamic_cast<Tetris*>(pWnd);
     assert(m_pGame != nullptr && "Game object is not initialized!");
+    m_pSoundManager = m_pGame->GetSoundManager();
 }
 
 void RankingScene::Finalize()
@@ -29,11 +30,21 @@ void RankingScene::Enter()
     m_pBackground->SetBitmapInfo(m_pGame->GetRankingBitmapInfo());
 
     m_rakingManger.LoadFromFile();
+
+    if (m_pSoundManager)
+    {
+        m_pSoundManager->PlayBGM(m_pSoundManager->SOUND_BGM_RANKING, 0.3f);
+    }
 }
 
 void RankingScene::Leave()
 {
     Finalize();
+
+    if (m_pSoundManager)
+    {
+        m_pSoundManager->StopBGM();
+    }
 }
 
 void RankingScene::FixedUpdate()
