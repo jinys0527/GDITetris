@@ -21,11 +21,9 @@ public:
     void Render(HDC hDC) override;
 
     void OnKeyDown(int key) override;
-
-    void SetRankingManager(RankingManager rankingManager);
 private:
     Tetris* m_pGame = nullptr;
     Background* m_pBackground = nullptr;
-    RankingManager* m_rakingManger;
+    RankingManager m_rakingManger;
 };
 

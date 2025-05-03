@@ -112,7 +112,7 @@ void RankingManager::LoadFromFile()
 	wchar_t name[4];
 	int lines, score;
 
-	while (feof(file) != 0)
+	while (true)
 	{
 		if (fread(name, sizeof(wchar_t), 4, file) != 4) break;
 		if (fread(&lines, sizeof(int), 1, file) != 1) break;
@@ -154,22 +154,22 @@ void RankingManager::DrawRanking(HDC hDC)
 
 	while (current != nullptr)
 	{
-		TextOutW(hDC, 303, y, current->GetName(), 3);
+		TextOutW(hDC, 323, y, current->GetName(), 3);
 
 		wchar_t linesText[32];
 		swprintf_s(linesText, L"%d", current->GetLines());
 		int linesLength = lstrlenW(linesText);
-		x = 541 - positioning * (linesLength - 1);
+		x = 613 - positioning * (linesLength - 1);
 		TextOutW(hDC, x, y, linesText, linesLength);
 
 		wchar_t scoreText[32];
 		swprintf_s(scoreText, L"%d", current->GetScore());
 		int scoreLength = lstrlenW(scoreText);
-		x = 815 - positioning * (scoreLength - 1);
+		x = 888 - positioning * (scoreLength - 1);
 		TextOutW(hDC, x, y, scoreText, scoreLength);
 		
 		current = current->GetNext();
-		y += 81;
+		y += 82;
 	}
 
 		// 폰트 복원

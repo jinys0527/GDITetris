@@ -28,7 +28,7 @@ void RankingScene::Enter()
 
     m_pBackground->SetBitmapInfo(m_pGame->GetRankingBitmapInfo());
 
-    m_rakingManger->LoadFromFile();
+    m_rakingManger.LoadFromFile();
 }
 
 void RankingScene::Leave()
@@ -48,7 +48,7 @@ void RankingScene::Render(HDC hDC)
 {
     m_pBackground->DrawBitmap(hDC, 0, 0, 1280, 960);
     
-    m_rakingManger->DrawRanking(hDC);
+    m_rakingManger.DrawRanking(hDC);
 }
 
 void RankingScene::OnKeyDown(int key)
@@ -57,9 +57,4 @@ void RankingScene::OnKeyDown(int key)
     {
         m_pGame->ChangeScene(SCENE_TITLE);
     }
-}
-
-void RankingScene::SetRankingManager(RankingManager rankingManager)
-{
-    m_rakingManger = &rankingManager;
 }

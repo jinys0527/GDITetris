@@ -62,8 +62,6 @@ class PlayScene :public Scene
 
     void SaveScore(const wchar_t* name);
 
-    RankingManager GetRankingManager();
-
     enum LastAction
     {
         ACTION_NONE,

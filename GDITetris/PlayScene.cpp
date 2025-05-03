@@ -867,11 +867,6 @@ void PlayScene::SaveScore(const wchar_t* name)
 	m_pGame->ChangeScene(SCENE_RANKING);
 }
 
-RankingManager PlayScene::GetRankingManager()
-{
-	return m_rankingManager;
-}
-
 void PlayScene::InitBag()
 {
 	for (int i = 0; i < 7; i++)
