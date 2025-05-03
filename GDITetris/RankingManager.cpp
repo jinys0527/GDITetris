@@ -3,6 +3,7 @@
 
 RankingManager::RankingManager() : m_pHead(nullptr), m_count(0)
 {
+	LoadFromFile();
 }
 
 RankingManager::~RankingManager()
