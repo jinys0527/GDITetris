@@ -1,4 +1,5 @@
 #pragma once
+#pragma pack(push, 1)
 class Ranking
 {
 public:
@@ -23,4 +24,4 @@ private:
     int m_score;
     Ranking* m_pNext;
 };
-
+#pragma pack(pop)

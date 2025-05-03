@@ -76,7 +76,7 @@ void RankingManager::AddRanking(const wchar_t* name, int lines, int score)
 void RankingManager::SaveToFile()
 {
 	FILE* file = nullptr;
-	_wfopen_s(&file, L"ranking.txt", L"wb");
+	_wfopen_s(&file, L"ranking.dat", L"wb");
 	if (file == nullptr)
 	{
 		return;
@@ -103,7 +103,7 @@ void RankingManager::LoadFromFile()
 	Clear();
 
 	FILE* file = nullptr;
-	_wfopen_s(&file, L"ranking.txt", L"rb");
+	_wfopen_s(&file, L"ranking.dat", L"rb");
 	if (file == nullptr)
 	{
 		return;
@@ -122,6 +122,61 @@ void RankingManager::LoadFromFile()
 	}
 
 	fclose(file);
+}
+
+void RankingManager::DrawRanking(HDC hDC)
+{
+	Ranking* current = m_pHead;
+
+	int x;
+	int positioning = 15;
+	int y = 300;
+
+	SetBkMode(hDC, TRANSPARENT);
+
+	HFONT hFont = CreateFontW(
+		40, 0, 0, 0,
+		FW_BOLD,
+		FALSE, FALSE, FALSE,
+		OEM_CHARSET,
+		OUT_RASTER_PRECIS,
+		CLIP_DEFAULT_PRECIS,
+		NONANTIALIASED_QUALITY,
+		FIXED_PITCH | FF_MODERN,
+		L"Terminal"
+	);
+
+	// 현재 DC에 폰트 적용
+	HFONT hOldFont = (HFONT)SelectObject(hDC, hFont);
+
+	// 텍스트 색상 설정 (예: 흰색)
+	SetTextColor(hDC, RGB(255, 255, 255));
+
+	while (current != nullptr)
+	{
+		TextOutW(hDC, 303, y, current->GetName(), 3);
+
+		wchar_t linesText[32];
+		swprintf_s(linesText, L"%d", current->GetLines());
+		int linesLength = lstrlenW(linesText);
+		x = 541 - positioning * (linesLength - 1);
+		TextOutW(hDC, x, y, linesText, linesLength);
+
+		wchar_t scoreText[32];
+		swprintf_s(scoreText, L"%d", current->GetScore());
+		int scoreLength = lstrlenW(scoreText);
+		x = 815 - positioning * (scoreLength - 1);
+		TextOutW(hDC, x, y, scoreText, scoreLength);
+		
+		current = current->GetNext();
+		y += 81;
+	}
+
+		// 폰트 복원
+	SelectObject(hDC, hOldFont);
+
+	// 폰트 객체 삭제
+	DeleteObject(hFont);
 }
 
 Ranking* RankingManager::GetTopRanking() const

@@ -1,7 +1,8 @@
 #pragma once
 #include "Scene.h"
+#include "RankingManager.h"
 
-class BackGround;
+class Background;
 class Tetris;
 
 class RankingScene : public Scene
@@ -19,12 +20,12 @@ public:
     void Update(float deltaTime) override;
     void Render(HDC hDC) override;
 
-    void OnKeyDown(int key) {}
-    void OnKeyUp(int key) {}
-    void OnClicked(int x, int y) {}
+    void OnKeyDown(int key) override;
 
+    void SetRankingManager(RankingManager rankingManager);
 private:
     Tetris* m_pGame = nullptr;
-    BackGround* m_pBackground = nullptr;
+    Background* m_pBackground = nullptr;
+    RankingManager* m_rakingManger;
 };
 

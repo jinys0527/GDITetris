@@ -62,6 +62,8 @@ class PlayScene :public Scene
 
     void SaveScore(const wchar_t* name);
 
+    RankingManager GetRankingManager();
+
     enum LastAction
     {
         ACTION_NONE,
@@ -111,7 +113,7 @@ private:
     bool m_isTetris = false;
 
     const int DAS_DELAY = 170;
-    const int ARR_SPEED = 75;
+    const int ARR_SPEED = 50;
     int m_dasTimer = 0;
     int m_arrTimer = 0;
     bool m_keyLeftPressed = false;

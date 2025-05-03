@@ -1,5 +1,6 @@
 #pragma once
 #include "Ranking.h"
+#include <Windows.h>
 
 class RankingManager
 {
@@ -12,6 +13,8 @@ public:
 	void SaveToFile();
 	void LoadFromFile();
 
+	void DrawRanking(HDC hDC);
+
 	Ranking* GetTopRanking() const;
 	int GetCount() const;
 
@@ -22,4 +25,3 @@ private:
 	void InsertRanking(Ranking* newRanking);
 	void EnsureMaximumRankings(int maxCount = 5);
 };
-

@@ -867,6 +867,11 @@ void PlayScene::SaveScore(const wchar_t* name)
 	m_pGame->ChangeScene(SCENE_RANKING);
 }
 
+RankingManager PlayScene::GetRankingManager()
+{
+	return m_rankingManager;
+}
+
 void PlayScene::InitBag()
 {
 	for (int i = 0; i < 7; i++)
@@ -919,6 +924,11 @@ void PlayScene::Finalize()
 	{
 		delete m_pGameover;
 		m_pGameover = nullptr;
+	}
+	if (m_pEnterName)
+	{
+		delete m_pEnterName;
+		m_pEnterName = nullptr;
 	}
 	if (m_pTetromino)
 	{
