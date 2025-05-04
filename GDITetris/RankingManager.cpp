@@ -113,7 +113,7 @@ void RankingManager::LoadFromFile()
 	wchar_t name[4];
 	int lines, score;
 
-	while (true)
+	while (!feof(file))
 	{
 		if (fread(name, sizeof(wchar_t), 4, file) != 4) break;
 		if (fread(&lines, sizeof(int), 1, file) != 1) break;
