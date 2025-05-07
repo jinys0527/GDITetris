@@ -160,6 +160,25 @@ void PlayScene::Update(float deltaTime)
 	case ENTERINGNAME:
 		if (m_isEnterClicked)
 		{
+			if (m_playerName)
+			{
+				int len = wcslen(m_playerName);
+				switch (len)
+				{
+				case 0:
+					wcscpy_s(m_playerName, 4, L"AAA");
+					break;
+				case 1:
+					wcscat_s(m_playerName, 4, L"AA");
+					break;
+				case 2:
+					wcscat_s(m_playerName, 4, L"A");
+					break;
+				default:
+					m_playerName[3] = L'\0';
+					break;
+				}
+			}
 			SaveScore(m_playerName);
 		}
 		break;
