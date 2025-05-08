@@ -120,9 +120,6 @@ void PlayScene::Update(float deltaTime)
 
 					if (!m_pTetromino->MoveDown(*m_pGameBoard)) {
 						// 충돌 처리
-						m_pGameBoard->FixTetrominoToBoard(*m_pGameBoard, m_pTetromino);
-						int clearedLines = m_pGameBoard->RemoveFullLines();
-						AddLinesCleard(clearedLines);
 
 						if (m_lastAction == ACTION_ROTATE)
 						{
@@ -132,6 +129,11 @@ void PlayScene::Update(float deltaTime)
 						{
 							m_isTSpin = false;
 						}
+
+						m_pGameBoard->FixTetrominoToBoard(*m_pGameBoard, m_pTetromino);
+
+						int clearedLines = m_pGameBoard->RemoveFullLines();
+						AddLinesCleard(clearedLines);
 
 						AddScore(clearedLines, m_isTSpin, m_combo);
 

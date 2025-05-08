@@ -1,5 +1,8 @@
 #include "Cell.h"
 #include "Utillity.h"
+#include <iostream>
+using namespace std;
+
 #define min(a, b) (((a) < (b)) ? (a) : (b))
 #define max(a, b) (((a) > (b)) ? (a) : (b))
 
@@ -485,12 +488,13 @@ bool GameBoard::CheckTSpin(Tetromino* tetromino)
 	};
 
 	int occupiedCorners = 0;
+
 	for (int i = 0; i < 4; i++)
 	{
 		int x = cornerCoords[i][0];
 		int y = cornerCoords[i][1];
 
-		if (x < 0 || x > m_maxXIndex || y < 0 || y > m_maxYIndex || IsOccupied(x, y))
+		if (x <= 0 || x >= m_maxXIndex || y <= 0 || y >= m_maxYIndex || IsOccupied(x, y))
 		{
 			occupiedCorners++;
 		}
