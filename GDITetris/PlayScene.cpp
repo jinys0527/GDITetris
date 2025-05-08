@@ -245,18 +245,6 @@ void PlayScene::Render(HDC hDC)
 
 	SetBkMode(hDC, TRANSPARENT);
 
-	HFONT hFont = CreateFontW(
-		40, 0, 0, 0,
-		FW_BOLD,
-		FALSE, FALSE, FALSE,
-		OEM_CHARSET,
-		OUT_RASTER_PRECIS,
-		CLIP_DEFAULT_PRECIS,
-		NONANTIALIASED_QUALITY,
-		FIXED_PITCH | FF_MODERN,
-		L"Terminal"
-	);
-
 	// 현재 DC에 폰트 적용
 	HFONT hOldFont = (HFONT)SelectObject(hDC, hFont);
 
@@ -337,7 +325,7 @@ void PlayScene::Render(HDC hDC)
 	if (m_GameState == ENTERINGNAME)
 	{
 		m_pEnterName->DrawBitmap(hDC, 0, 0, 1280, 960);
-		
+
 		int playerNameLength = wcslen(m_playerName);
 		SetTextColor(hDC, RGB(0, 0, 0));
 		TextOutW(hDC, 400, 390, m_playerName, playerNameLength);
@@ -345,9 +333,6 @@ void PlayScene::Render(HDC hDC)
 
 	// 폰트 복원
 	SelectObject(hDC, hOldFont);
-
-	// 폰트 객체 삭제
-	DeleteObject(hFont);
 }
 
 int PlayScene::GetLevel() const
@@ -449,39 +434,36 @@ void PlayScene::AddScore(int clearedLine, bool isTSpin, int combo)
 			{
 				m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_PERFECTCLEAR, 0.3f);
 			}
+			else if (m_isTSpin && m_isBackToBack)
+			{
+				m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_BACKTOBACK, 0.3f);
+			}
 			else if (m_isTSpin)
 			{
-				if (m_isBackToBack)
-				{
-					m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_BACKTOBACK, 0.3f);
-				}
-				else
-				{
-					m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_TSPIN, 0.3f);
-				}
+				m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_TSPIN, 0.3f);
+			}
+			else if (m_isTetris && m_isBackToBack)
+			{
+				m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_BACKTOBACK, 0.3f);
 			}
 			else if (m_isTetris)
 			{
-				if (m_isBackToBack)
+				m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_TETRIS, 0.3f);
+			}
+			else if (clearedLine > 0)
+			{
+				switch (clearedLine)
 				{
-					m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_BACKTOBACK, 0.3f);
+				case 1:
+					m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_SINGLE, 0.3f);
+					break;
+				case 2:
+					m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_DOUBLE, 0.3f);
+					break;
+				case 3:
+					m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_TRIPLE, 0.3f);
+					break;
 				}
-				else
-				{
-					m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_TETRIS, 0.3f);
-				}
-			}
-			else if (clearedLine == 1)
-			{
-				m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_SINGLE, 0.3f);
-			}
-			else if (clearedLine == 2)
-			{
-				m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_DOUBLE, 0.3f);
-			}
-			else if (clearedLine == 3)
-			{
-				m_pSoundManager->PlaySFX(m_pSoundManager->SOUND_TRIPLE, 0.3f);
 			}
 
 			switch (m_combo)
@@ -524,8 +506,8 @@ void PlayScene::AddScore(int clearedLine, bool isTSpin, int combo)
 			{
 				basePoints = basePoints * 3 / 2;
 				m_isBackToBack = true;
-			
-				if(m_pSoundManager)
+
+				if (m_pSoundManager)
 				{
 					if (m_isBackToBack)
 					{
@@ -598,7 +580,7 @@ void PlayScene::Init()
 
 void PlayScene::OnKeyDown(int key)
 {
-	switch(m_GameState)
+	switch (m_GameState)
 	{
 	case PLAYING:
 		switch (key)
@@ -735,7 +717,7 @@ void PlayScene::OnKeyDown(int key)
 
 void PlayScene::OnKeyUp(int key)
 {
-	if(m_GameState == PLAYING)
+	if (m_GameState == PLAYING)
 	{
 		switch (key)
 		{
@@ -1017,6 +999,18 @@ void PlayScene::Enter()
 		m_pSoundManager->PlayBGM(m_pSoundManager->SOUND_BGM_PLAY, 0.3f);
 		m_bgmStarted = true;
 	}
+
+	hFont = CreateFontW(
+		40, 0, 0, 0,
+		FW_BOLD,
+		FALSE, FALSE, FALSE,
+		OEM_CHARSET,
+		OUT_RASTER_PRECIS,
+		CLIP_DEFAULT_PRECIS,
+		NONANTIALIASED_QUALITY,
+		FIXED_PITCH | FF_MODERN,
+		L"Terminal"
+	);
 }
 
 void PlayScene::Leave()
@@ -1028,5 +1022,12 @@ void PlayScene::Leave()
 			m_pSoundManager->StopAllSFX();
 		}
 	}
+
+	if (hFont)
+	{
+		DeleteObject(hFont);
+		hFont = nullptr;
+	}
+
 	Finalize();
 }

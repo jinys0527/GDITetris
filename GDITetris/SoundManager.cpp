@@ -79,7 +79,7 @@ void SoundManager::Release()
 
 bool SoundManager::LoadSound(eSoundType type, const char* filename, bool loop)
 {
-	if (!m_system || type >= SOUND_COUNT)
+	if (!m_system || type >= SOUND_COUNT || type < 0)
 	{
 		return false;
 	}
@@ -128,7 +128,7 @@ void SoundManager::PlayBGM(eSoundType type, float volume)
 
 void SoundManager::PlaySFX(eSoundType type, float volume)
 {
-	if (!m_system || !m_sounds[type] || type >= SOUND_COUNT)
+	if (!m_system || !m_sounds[type] || type >= SOUND_COUNT || type < 0)
 	{
 		return;
 	}
@@ -159,7 +159,8 @@ void SoundManager::SetSFXVolume(float volume)
 
 FMOD::Channel* SoundManager::GetPrevChannel() const
 {
-	return m_sfxChannels[m_nextChannel-1];
+	int prevIndex = (m_nextChannel == 0) ? MAX_SFX_CHANNELS - 1 : m_nextChannel - 1;
+	return m_sfxChannels[prevIndex];
 }
 
 void SoundManager::StopBGM()

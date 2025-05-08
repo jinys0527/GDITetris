@@ -57,7 +57,7 @@ private:
 	FMOD::Channel* m_bgm;
 	FMOD::ChannelGroup* m_sfxGroup;
 
-	static const int MAX_SFX_CHANNELS = 20;
+	static const int MAX_SFX_CHANNELS = 32;
 	FMOD::Channel* m_sfxChannels[MAX_SFX_CHANNELS];
 	int m_nextChannel;
 
