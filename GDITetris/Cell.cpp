@@ -339,7 +339,7 @@ void GameBoard::PositioningHoldBlock(int& x, int& y, Tetromino* holdTetromino)
 			y = 250;
 			break;
 		case 3:
-			x = 130;
+			x = 150;
 			y = 325;
 			break;
 		}
