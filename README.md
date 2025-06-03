@@ -3,6 +3,9 @@
 ## GDI Tetris 프로젝트
 ![image](https://github.com/user-attachments/assets/8d857eba-e1ac-417c-88f9-8ee8616a111d)
 
+### Youtube
+https://youtu.be/cgpSAbcx-3I
+
 ### 프로젝트 개요
 본 프로젝트는 게임인재원 7기 1분기 GDI 게임 개인 프로젝트로, Windows GDI(Graphics Device Interface)를 사용하여 테트리스를 구현하는 것을 목표로 합니다. 저수준 그래픽 API인 GDI를 활용하여 블록 그리기, 충돌 판정, 줄 제거, 게임 루프 등을 직접 구현함으로써 게임 로직 및 화면 출력 구조에 대한 이해를 높이고자 했습니다.
 
